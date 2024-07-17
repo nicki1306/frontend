@@ -1,6 +1,19 @@
 // frontend/src/App.js
 import React from 'react';
 import './App.css';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
+import { AuthProvider } from '../context/AuthContext';
+import Cart from './components/cart.js';
+import Checkout from './components/checkout.js';
+import Payment from './components/payment.js';
+import Success from './components/success.js';
+import Cancel from './components/cancel.js';
+import ProductDetails from './components/ProductDetails.js';
+import Login from './components/login.js';
+import Register from './components/Register.js';
+import Orders from './components/Orders.js';
+import Profile from './components/Profile.js';
+import Home from './components/Home.js';
 import ProductList from './components/ProductList.js';
 
 function App() {
@@ -10,6 +23,7 @@ function App() {
         <p>Bienvenido a la tienda de juguetes</p>
       </header>
       <Router>
+      <Route path="/" component={Home} />
         <Route path="/" exact component={ProductList} />
         <Route path="/cart" component={Cart} />
         <Route path="/checkout" component={Checkout} />
@@ -22,29 +36,6 @@ function App() {
         <Route path="/register" component={Register} />
         <Route path="/orders" component={Orders} />
         <Route path="/profile" component={Profile} />
-        <Route path="/order/:id" component={OrderDetails} />
-        <Route path="/search" component={Search} />
-        <Route path="/admin" component={Admin} />
-        <Route path="/admin/products" component={AdminProducts} />
-        <Route path="/admin/orders" component={AdminOrders} />
-        <Route path="/admin/users" component={AdminUsers} />
-        <Route path="/admin/users/:id" component={AdminUserDetails} />
-        <Route path="/admin/products/:id" component={AdminProductDetails} />
-        <Route path="/admin/orders/:id" component={AdminOrderDetails} />
-        <Route path="/admin/orders/:id/pay" component={PayOrder} />
-        <Route path="/admin/orders/:id/ship" component={ShipOrder} />
-        <Route path="/admin/orders/:id/return" component={ReturnOrder} />
-        <Route path="/admin/orders/:id/cancel" component={CancelOrder} />
-        <Route path="/admin/users/:id/edit" component={EditUser} />
-        <Route path="/admin/products/:id/edit" component={EditProduct} />
-        <Route path="/admin/orders/:id/edit" component={EditOrder} />
-        <Route path="/admin/users/:id/edit/password" component={EditPassword} />
-        <Route path="/admin/products/:id/edit/stock" component={EditStock} />
-        <Route path="/admin/products/:id/edit/price" component={EditPrice} />
-        <Route path="/admin/products/:id/edit/name" component={EditName} />
-        <Route path="/admin/products/:id/edit/description" component={EditDescription} />
-        <Route path="/admin/products/:id/edit/category" component={EditCategory} />
-        <Route path="/admin/products/:id/edit/brand" component={EditBrand} />
       </Router>
       <main>
       <ProductList />
