@@ -1,18 +1,19 @@
+// frontend/src/context/CartContext.js
 import React, { createContext, useState, useEffect } from 'react';
 import axios from 'axios';
 
 export const CartContext = createContext();
 
 export const CartProvider = ({ children }) => {
-    const [cart, setCart] = useState([]);
+    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         const fetchCart = async () => {
-            const userId = localStorage.getItem('userId'); // Suponiendo que guardaste el userId en el localStorage
+            const userId = localStorage.getItem('userId');
             if (userId) {
                 try {
                     const response = await axios.get(`http://localhost:8080/api/cart/${userId}`);
-                    setCart(response.data.products);
+                    setCartItems(response.data.products);
                 } catch (error) {
                     console.error('Error fetching cart:', error);
                 }
@@ -27,7 +28,7 @@ export const CartProvider = ({ children }) => {
         if (userId) {
             try {
                 const response = await axios.post(`http://localhost:8080/api/cart/${userId}`, { productId, quantity });
-                setCart(response.data.products);
+                setCartItems(response.data.products);
             } catch (error) {
                 console.error('Error adding to cart:', error);
             }
@@ -39,7 +40,7 @@ export const CartProvider = ({ children }) => {
         if (userId) {
             try {
                 const response = await axios.delete(`http://localhost:8080/api/cart/${userId}/${productId}`);
-                setCart(response.data.products);
+                setCartItems(response.data.products);
             } catch (error) {
                 console.error('Error removing from cart:', error);
             }
@@ -47,7 +48,7 @@ export const CartProvider = ({ children }) => {
     };
 
     return (
-        <CartContext.Provider value={{ cart, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
             {children}
         </CartContext.Provider>
     );
