@@ -8,9 +8,10 @@ const ProductList = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
+            const response = await axios.get('http://localhost:8080/');
+            console.log(response);
+            setProducts(response.data);
             try {
-                const response = await axios.get('http://localhost:8080/api/products');
-                setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
             }
@@ -27,7 +28,7 @@ const ProductList = () => {
                     <li key={product._id} className="mb-4">
                         <h3 className="text-xl">{product.name}</h3>
                         <p>{product.description}</p>
-                        <button 
+                        <button
                             onClick={() => addToCart(product._id, 1)}
                             className="bg-blue-500 text-white py-1 px-2 rounded"
                         >
