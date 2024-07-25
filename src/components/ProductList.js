@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
+import axios from '../axios';
 import { CartContext } from '../context/CartContext';
 
 const ProductList = () => {
@@ -9,7 +9,9 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/products');
+                const response = await axios.get('http://localhost:8080/api/products', {
+                    withCredentials: true
+                });
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error fetching products:', error);
@@ -41,4 +43,3 @@ const ProductList = () => {
 };
 
 export default ProductList;
-
