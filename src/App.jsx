@@ -1,16 +1,16 @@
 import React from 'react';
 import './App.css';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import { AuthProvider } from './context/AuthContext.js';
-import { CartProvider } from './context/CartContext.js';
-import Cart from './components/cart.js';
-import Checkout from './components/checkout.js';
-import Payment from './components/payment.js';
-import ProductDetails from './components/ProductDetails.js';
-import Login from './components/login.js';
-import Register from './components/Register.js';
-import ProductList from './components/ProductList.js';
-import Home from './components/Home.js';
+import { AuthProvider } from './context/AuthContext.jsx';
+import { CartProvider } from './context/CartContext.jsx';
+import Cart from './components/cart.jsx';
+import Checkout from './components/checkout.jsx';
+import Payment from './components/payment.jsx';
+import ProductDetails from './components/ProductDetails.jsx';
+import Login from './components/login.jsx';
+import Register from './components/Register.jsx';
+import ProductList from './components/ProductList.jsx';
+import Home from './components/Home.jsx';
 
 function App() {
   return (
