@@ -9,7 +9,7 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8080/api/products', {
+                const response = await axios.get('http://localhost:8081/api/products', {
                     withCredentials: true
                 });
                 setProducts(response.data);
