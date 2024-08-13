@@ -5,16 +5,17 @@ export default defineConfig({
     plugins: [react()],
     base: './',
     build: {
-        outDir: '../backend/public',
+        outDir: 'dist',
         rollupOptions: {
-            input: 'public/index.html',
+            input: './public/index.html',
         }
     },
     server: {
+        host: '127.0.0.1',
         port: 5173,
         proxy: {
             '/api': {
-                target: 'http://localhost:8080',
+                target: 'http://localhost:8081',
                 changeOrigin: true,
                 secure: false,
             },
