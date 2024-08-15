@@ -9,11 +9,21 @@ export default defineConfig({
 plugins: [react()],
 build: {
     outDir: 'dist',
-    emptyOutDir: true
+    rollupOptions: {
+        input: 'index.html'
+
+    }
 
 },
 server: {
-    port: 3000
+    host: '0.0.0.0',
+    port: 3000,
+    proxy: {
+        '/api': {
+            target: 'http://localhost:8081',
+            changeOrigin: true
+        }
+    }
 
 }
 
