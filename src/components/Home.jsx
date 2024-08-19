@@ -8,7 +8,7 @@ function Home() {
         
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('/api/products'); 
+                const response = await axios.get('http://localhost:8081/api/products'); 
                 setProducts(response.data);
             } catch (error) {
                 console.error('Error al obtener los productos:', error);

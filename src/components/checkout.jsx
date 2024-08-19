@@ -20,7 +20,7 @@ const Checkout = () => {
                 paymentMethod,
                 items: cart,
             };
-            await axios.post('http://localhost:8080/api/orders', order);
+            await axios.post('http://localhost:8081/api/orders', order);
             clearCart();
             alert('Order placed successfully!');
         } catch (error) {

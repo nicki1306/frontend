@@ -1,5 +1,6 @@
 import React from 'react';
 
+
 const ProductItem = ({ product }) => {
     return (
         <div className="bg-white p-4 rounded shadow-md">

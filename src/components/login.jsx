@@ -8,7 +8,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:8080/api/auth/login', { email, password });
+            const response = await axios.post('http://localhost:8081/api/auth/login', { email, password });
             console.log('Login successful, token:', response.data.token);
             // Guarda el token en el almacenamiento local o en el estado de la aplicación
         } catch (error) {
