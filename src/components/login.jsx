@@ -9,10 +9,10 @@ const Login = () => {
         e.preventDefault();
         try {
             const response = await axios.post('http://localhost:8081/api/auth/login', { email, password });
-            console.log('Login successful, token:', response.data.token);
+            console.log('Login successfully', response.data.token);
             // Guarda el token en el almacenamiento local o en el estado de la aplicación
         } catch (error) {
-            console.error('Error during login:', error.response.data.message);
+            console.error('Error during login:');
         }
     };
 

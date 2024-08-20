@@ -12,7 +12,7 @@ export const CartProvider = ({ children }) => {
             const userId = localStorage.getItem('userId');
             if (userId) {
                 try {
-                    const response = await axios.get(`http://localhost:8080/api/cart/${userId}`);
+                    const response = await axios.get(`http://localhost:8081/api/cart/${userId}`);
                     setCartItems(response.data.products);
                 } catch (error) {
                     console.error('Error fetching cart:', error);
@@ -27,7 +27,7 @@ export const CartProvider = ({ children }) => {
         const userId = localStorage.getItem('userId');
         if (userId) {
             try {
-                const response = await axios.post(`http://localhost:8080/api/cart/${userId}`, { productId, quantity });
+                const response = await axios.post(`http://localhost:8081/api/cart/${userId}`, { productId, quantity });
                 setCartItems(response.data.products);
             } catch (error) {
                 console.error('Error adding to cart:', error);
@@ -39,7 +39,7 @@ export const CartProvider = ({ children }) => {
         const userId = localStorage.getItem('userId');
         if (userId) {
             try {
-                const response = await axios.delete(`http://localhost:8080/api/cart/${userId}/${productId}`);
+                const response = await axios.delete(`http://localhost:8081/api/cart/${userId}/${productId}`);
                 setCartItems(response.data.products);
             } catch (error) {
                 console.error('Error removing from cart:', error);
