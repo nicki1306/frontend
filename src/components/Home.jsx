@@ -1,17 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
-function Home() {
+const Home = () => {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/products'); 
-                setProducts(response.data);
+                const response = await axios.get('http://localhost:8081/api/products', {
+                    withCredentials: true
+                });
+                if (Array.isArray(response.data)) {
+                    setProducts(response.data);
+                } else {
+                    console.error('Expected an array but got:', response.data);
+                    setProducts([]);
+                }
             } catch (error) {
-                console.error('Error al obtener los productos:', error);
+                console.error('Error fetching products:', error);
+                setProducts([]);
             }
         };
 
@@ -26,7 +32,7 @@ function Home() {
             </header>
             <div className="container mx-auto p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {products.length > 0 ? (
-                    products.map((product) => (
+                    products.map((product) => (     
                         <div key={product._id} className="border rounded-lg shadow-lg p-4">
                             <img
                                 src={product.image} 

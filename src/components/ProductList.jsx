@@ -4,6 +4,7 @@ import { CartContext } from '../context/CartContext';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
     const { addToCart } = useContext(CartContext);
 
     useEffect(() => {
@@ -16,11 +17,11 @@ const ProductList = () => {
                     setProducts(response.data);
                 } else {
                     console.error('Expected an array but got:', response.data);
-                    setProducts([]);
+                    setError('Unexpected response format');
                 }
             } catch (error) {
                 console.error('Error fetching products:', error);
-                setProducts([]);
+                setError('Error fetching products');
             }
         };
 
@@ -30,24 +31,28 @@ const ProductList = () => {
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl mb-4">Products</h2>
-            <ul>
-                {products.length > 0 ? (
-                    products.map(product => (
-                        <li key={product._id} className="mb-4">
-                            <h3 className="text-xl">{product.name}</h3>
-                            <p>{product.description}</p>
-                            <button
-                                onClick={() => addToCart(product._id, 1)}
-                                className="bg-blue-500 text-white py-1 px-2 rounded"
-                            >
-                                Add to Cart
-                            </button>
-                        </li>
-                    ))
-                ) : (
-                    <p>No products available.</p>
-                )}
-            </ul>
+            {error ? (
+                <p className="text-red-500">{error}</p>
+            ) : (
+                <ul>
+                    {products.length > 0 ? (
+                        products.map(product => (
+                            <li key={product._id} className="mb-4">
+                                <h3 className="text-xl">{product.name}</h3>
+                                <p>{product.description}</p>
+                                <button
+                                    onClick={() => addToCart(product._id, 1)}
+                                    className="bg-blue-500 text-white py-1 px-2 rounded"
+                                >
+                                    Add to Cart
+                                </button>
+                            </li>
+                        ))
+                    ) : (
+                        <p>No products available.</p>
+                    )}
+                </ul>
+            )}
         </div>
     );
 };
