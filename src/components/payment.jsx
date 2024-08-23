@@ -21,7 +21,7 @@ const Payment = () => {
         e.preventDefault();
 //integrar con un servicio de pagos
         console.log('Form submitted:', formData);
-        // Add your payment logic here
+
         setFormData({
             name: '',
             address: '',

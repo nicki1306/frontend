@@ -1,4 +1,4 @@
-// frontend/src/components/checkout.js
+
 import React, { useContext, useState } from 'react';
 import { CartContext } from '../context/CartContext';
 import axios from 'axios';
