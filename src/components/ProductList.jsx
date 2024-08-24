@@ -14,6 +14,7 @@ const ProductList = () => {
                     withCredentials: true
                 });
                 if (Array.isArray(response.data)) {
+                    console.log(response.data);
                     setProducts(response.data);
                 } else {
                     console.error('Expected an array but got:', response.data);
