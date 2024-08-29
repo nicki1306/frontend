@@ -2,7 +2,11 @@ import React, { useContext } from 'react';
 import { CartContext } from '../context/CartContext';
 
 const Cart = () => {
-    const { cart, removeFromCart } = useContext(CartContext);
+    const { cart, addToCart, removeFromCart } = useContext(CartContext);
+
+    const handleAddToCart = (productId) => {
+        addToCart(productId, 1);
+    };
 
     return (
         <div className="container mx-auto p-4">
@@ -25,6 +29,12 @@ const Cart = () => {
                     ))}
                 </ul>
             )}
+            <button
+                onClick={handleAddToCart}
+                className="bg-blue-500 text-white py-2 px-4 rounded"
+            >
+                Checkout
+            </button>
         </div>
     );
 };
