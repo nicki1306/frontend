@@ -25,6 +25,8 @@ const Home = () => {
         fetchProducts();
     }, []);
 
+    console.log(products)
+
     return (
         <div>
             <header className="text-center py-4 bg-gray-200">
