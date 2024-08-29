@@ -9,6 +9,7 @@ const Home = () => {
                 const response = await axios.get('http://localhost:8081/api/products', {
                     withCredentials: true
                 });
+                console.log(response.data)
                 if (Array.isArray(response.data)) {
                     setProducts(response.data);
                 } else {
@@ -32,8 +33,8 @@ const Home = () => {
             </header>
             <div className="container mx-auto p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {products.length > 0 ? (
-                    products.map((product) => (     
-                        <div key={product._id} className="border rounded-lg shadow-lg p-4">
+                    products.map((product, index) => (     
+                        <div key={index} className="border rounded-lg shadow-lg p-4">
                             <img
                                 src={product.image} 
                                 alt={product.name}

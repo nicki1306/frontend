@@ -12,7 +12,7 @@ const Navbar = () => {
                     <div className="flex items-center">
                         <Link to="/" className="text-2xl font-bold text-teal-400">Toy Store</Link>
                         <div className="ml-10 flex items-baseline space-x-4">
-                            <NavLink to="/home" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Home</NavLink>
+                            <NavLink to="/" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Home</NavLink>
                             <NavLink to="/products" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Products</NavLink>
                             <NavLink to="/cart" className="hover:bg-gray-700 px-3 py-2 rounded-md text-sm font-medium">Cart</NavLink>
                             {authToken ? (

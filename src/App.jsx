@@ -19,7 +19,7 @@ function App() {
       <CartProvider>
         <Router>
           <Navbar />
-          <header className="App-header" >
+          <header className="app-header min-h-60" >
             <p>Bienvenido a la tienda de juguetes</p>
           </header>
           <div className="App">

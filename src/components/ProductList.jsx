@@ -13,8 +13,7 @@ const ProductList = () => {
                 const response = await axios.get('http://localhost:8081/api/products', {
                     withCredentials: true
                 });
-                if (Array.isArray(response.data)) {
-                    console.log(response.data);
+                if (Array.isArray(response.data)) {ç
                     setProducts(response.data);
                 } else {
                     console.error('Expected an array but got:', response.data);
@@ -37,12 +36,12 @@ const ProductList = () => {
             ) : (
                 <ul>
                     {products.length > 0 ? (
-                        products.map(product => (
-                            <li key={product._id} className="mb-4">
+                        products.map((product, index) => (
+                            <li key={index} className="mb-4">
                                 <h3 className="text-xl">{product.name}</h3>
                                 <p>{product.description}</p>
                                 <button
-                                    onClick={() => addToCart(product._id, 1)}
+                                    onClick={() => addToCart(index, 1)}
                                     className="bg-blue-500 text-white py-1 px-2 rounded"
                                 >
                                     Add to Cart
