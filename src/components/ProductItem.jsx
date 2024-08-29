@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const ProductItem = ({ product, addToCart }) => {
     return (
@@ -19,6 +20,13 @@ const ProductItem = ({ product, addToCart }) => {
             >
                 Add to Cart
             </button>
+            <Link 
+                to={`/products/${product._id}`} 
+                className="mt-4 bg-blue-500 text-white px-4 py-2 rounded inline-block text-center"
+                aria-label={`Detalle del producto ${product.name}`}
+                >
+                Ver Más
+            </Link>
         </div>
     );
 };

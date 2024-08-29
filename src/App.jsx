@@ -13,6 +13,7 @@ import Register from './components/Register.jsx';
 import ProductList from './components/ProductList.jsx';
 import Home from './components/Home.jsx';
 
+
 function App() {
   return (
     <AuthProvider>
