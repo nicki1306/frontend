@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react';
 import axios from '../axios';
 import { CartContext } from '../context/CartContext';
+import { useNavigate } from 'react-router-dom';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const { addToCart } = useContext(CartContext);
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -28,34 +30,45 @@ const ProductList = () => {
         fetchProducts();
     }, []);
 
+    const handleAddToCart = async (productId, quantity) => {
+        try {
+            await addToCart(productId, quantity);
+            navigate('/cart');
+        } catch (error) {
+            console.error('Error adding to cart:', error);
+        }
+    };
+
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl mb-4">Products</h2>
+            <h2 className="text-2xl mb-4">Productos</h2>
             {error ? (
                 <p className="text-red-500">{error}</p>
             ) : (
-                <ul>
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {products.length > 0 ? (
                         products.map((product) => (
-                            <li key={product._id} className="mb-4">
-                                <h3 className="text-xl">{product.toy_name}</h3>
-                                <p>{product.description}</p>
+                            <li key={product._id} className="mb-4 list-none bg-white rounded-lg shadow-md p-4">
+                                <img src={product.image} alt={product.toy_name} className="w-full h-48 object-cover mb-4 rounded" />
+                                <h3 className="text-xl font-semibold mb-2">{product.toy_name}</h3>
+                                <p className="text-gray-700 mb-2">Precio: ${product.price}</p>
+                                <p className="text-gray-700 mb-2">Stock: {product.stock}</p>
+                                <p className="text-gray-600 mb-4">{product.description}</p>
                                 <button
-                                    onClick={() => addToCart(product._id, 1)}
-                                    className="bg-blue-500 text-white py-1 px-2 rounded"
+                                    onClick={() => handleAddToCart(product._id, 1)}
+                                    className="bg-blue-500 text-white py-1 px-2 rounded w-full"
                                 >
-                                    Add to Cart
+                                    Agregar al carrito
                                 </button>
                             </li>
                         ))
                     ) : (
                         <p>No products available.</p>
                     )}
-                </ul>
+                </div>
             )}
         </div>
     );
 };
 
 export default ProductList;
-

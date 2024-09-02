@@ -5,6 +5,7 @@ import { AuthProvider } from './context/AuthContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import Navbar from './components/navbar.jsx';
 import Cart from './components/cart.jsx';
+import CartItems from './components/CartItems.jsx';
 import Checkout from './components/checkout.jsx';
 import Payment from './components/payment.jsx';
 import ProductDetails from './components/ProductDetails.jsx';
@@ -29,6 +30,7 @@ function App() {
               <Route path="/products" element={<ProductList />} />
               <Route path="/products/:id" element={<ProductDetails />} />
               <Route path="/cart" element={<Cart />} />
+              <Route path="/cartItems" element={<CartItems />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/login" element={<Login />} />

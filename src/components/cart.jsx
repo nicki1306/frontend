@@ -1,39 +1,62 @@
 import React, { useContext } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 import { CartContext } from '../context/CartContext';
 
 const Cart = () => {
-    const { cart, addToCart, removeFromCart } = useContext(CartContext);
+    const { cartItems, removeFromCart } = useContext(CartContext);
+    const navigate = useNavigate();
 
-    const handleAddToCart = (productId) => {
-        addToCart(productId, 1);
+    const handleCheckout = async () => {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            navigate('/login');
+            return;
+        }
+        try {
+            console.log("Checkout process started");
+
+            // Enviar la solicitud de checkout al backend
+            const response = await axios.post(`http://localhost:8081/api/checkout/${userId}`, {
+                products: cartItems
+            });
+
+            if (response.status === 200) {
+                navigate('/checkout');
+            } else {
+                console.error("Checkout failed:", response.data);
+            }
+        } catch (error) {
+            console.error("Error during checkout:", error);
+        }
     };
 
     return (
         <div className="container mx-auto p-4">
-            <h2 className="text-2xl mb-4">Shopping Cart</h2>
-            {cart.length === 0 ? (
-                <p>Your cart is empty.</p>
+            <h2 className="text-2xl mb-4">Carrito</h2>
+            {cartItems && cartItems.length === 0 ? (
+                <p>Tu carrito está vacío.</p>
             ) : (
                 <ul>
-                    {cart.map(item => (
-                        <li key={item.productId._id} className="mb-4">
-                            <h3 className="text-xl">{item.productId.name}</h3>
-                            <p>Quantity: {item.quantity}</p>
+                    {cartItems && cartItems.map(item => (
+                        <li key={item._id} className="mb-4">
+                            <h3 className="text-xl">{item.toy_name}</h3>
+                            <p>Cantidad: {item.quantity}</p>
                             <button 
-                                onClick={() => removeFromCart(item.productId._id)}
+                                onClick={() => removeFromCart(item._id)}
                                 className="bg-red-500 text-white py-1 px-2 rounded"
                             >
-                                Remove
+                                Eliminar
                             </button>
                         </li>
                     ))}
                 </ul>
             )}
             <button
-                onClick={handleAddToCart}
+                onClick={handleCheckout}
                 className="bg-blue-500 text-white py-2 px-4 rounded"
             >
-                Checkout
+                Ir a pagar
             </button>
         </div>
     );

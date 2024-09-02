@@ -45,10 +45,10 @@ const ProductDetails = () => {
 
     return (
         <div className="product-details bg-white p-4 rounded shadow-md">
-            <h1 className="text-2xl font-bold">{product.name}</h1>
+            <h1 className="text-2xl font-bold">{product.toy_name}</h1>
             <img 
                 src={product.imageUrl} 
-                alt={`Image of ${product.name}`} 
+                alt={`Image of ${product.toy_name}`} 
                 className="w-full h-48 object-cover rounded mt-4" 
             />
             <p className="mt-2">{product.description}</p>

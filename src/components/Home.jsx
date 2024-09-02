@@ -1,18 +1,22 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const Home = () => {
+    const navigate = useNavigate();
     const [products, setProducts] = useState([]);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/products', {
+                const response = await axios.get('http://localhost:8081/api/products/category/destacados', {
                     withCredentials: true
                 });
                 console.log(response.data);
                 if (Array.isArray(response.data)) {
-                    setProducts(response.data);
+                    const featuredProducts = response.data.filter(product => product.category === 'destacados');
+                    setProducts(featuredProducts);  
                 } else {
                     console.error('Expected an array but got:', response.data);
                     setProducts([]);
@@ -27,6 +31,10 @@ const Home = () => {
     }, []);
 
     console.log(products);
+
+    const handleViewMore = (id) => {
+        navigate(`/products/${id}`);
+    };
 
     return (
         <div>
@@ -46,7 +54,8 @@ const Home = () => {
                             <h2 className="text-xl font-semibold mb-2">{product.toy_name}</h2>
                             <p className="text-gray-600 mb-2">{product.description}</p>
                             <p className="text-lg font-bold">${product.price}</p>
-                            <button className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+                            <button 
+                                onClick={() => handleViewMore(product._id)} className="mt-4 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
                                 Ver más
                             </button>
                         </div>
