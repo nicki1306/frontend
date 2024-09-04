@@ -48,7 +48,7 @@ const ProductList = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                     {products.length > 0 ? (
                         products.map((product) => (
-                            <li key={product._id} className="mb-4 list-none bg-white rounded-lg shadow-md p-4">
+                            <div key={product._id} className="mb-4 bg-white rounded-lg shadow-md p-4">
                                 <img src={product.image} alt={product.toy_name} className="w-full h-48 object-cover mb-4 rounded" />
                                 <h3 className="text-xl font-semibold mb-2">{product.toy_name}</h3>
                                 <p className="text-gray-700 mb-2">Precio: ${product.price}</p>
@@ -60,7 +60,7 @@ const ProductList = () => {
                                 >
                                     Agregar al carrito
                                 </button>
-                            </li>
+                            </div>
                         ))
                     ) : (
                         <p>No products available.</p>
