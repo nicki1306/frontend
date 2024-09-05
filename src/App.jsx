@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext.jsx';
 import { CartProvider } from './context/CartContext.jsx';
 import Navbar from './components/navbar.jsx';
+import AdminPage from './components/Admin.jsx';
 import Cart from './components/cart.jsx';
 import CartItems from './components/CartItems.jsx';
 import Checkout from './components/checkout.jsx';
@@ -35,6 +36,7 @@ function App() {
               <Route path="/payment" element={<Payment />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/admin" element={<AdminPage />} />
             </Routes>
           </div>
         </Router>

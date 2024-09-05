@@ -32,12 +32,24 @@ const ProductList = () => {
 
     const handleAddToCart = async (productId, quantity) => {
         try {
-            await addToCart(productId, quantity);
-            navigate('/cart');
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.error('Token no disponible. Usuario no autenticado.');
+                return;
+            }
+    
+            const response = await axios.post('http://localhost:8081/api/cart', { productId, quantity }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
+            console.log('Producto agregado al carrito:', response.data);
         } catch (error) {
-            console.error('Error adding to cart:', error);
+            console.error('Error al agregar producto al carrito:', error);
         }
     };
+    
+    
 
     return (
         <div className="container mx-auto p-4">

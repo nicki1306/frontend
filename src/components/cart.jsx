@@ -6,7 +6,7 @@ import { CartContext } from '../context/CartContext';
 const Cart = () => {
     const { cartItems, removeFromCart } = useContext(CartContext);
     const navigate = useNavigate();
-
+    
     const handleCheckout = async () => {
         const userId = localStorage.getItem('userId');
         if (!userId) {
@@ -34,11 +34,11 @@ const Cart = () => {
     return (
         <div className="container mx-auto p-4">
             <h2 className="text-2xl mb-4">Carrito</h2>
-            {cartItems && cartItems.length === 0 ? (
+            {cartItems.length === 0 ? (
                 <p>Tu carrito está vacío.</p>
             ) : (
                 <ul>
-                    {cartItems && cartItems.map(item => (
+                    {cartItems.map(item => (
                         <li key={item._id} className="mb-4">
                             <h3 className="text-xl">{item.toy_name}</h3>
                             <p>Cantidad: {item.quantity}</p>
@@ -52,12 +52,14 @@ const Cart = () => {
                     ))}
                 </ul>
             )}
-            <button
-                onClick={handleCheckout}
-                className="bg-blue-500 text-white py-2 px-4 rounded"
-            >
-                Ir a pagar
-            </button>
+            {cartItems.length > 0 && (
+                <button
+                    onClick={handleCheckout}
+                    className="mt-4 bg-blue-500 text-white py-2 px-4 rounded"
+                >
+                    Ir a pagar
+                </button>
+            )}
         </div>
     );
 };
