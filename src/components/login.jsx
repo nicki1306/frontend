@@ -10,6 +10,18 @@ const Login = () => {
     const { login } = useAuth();
     const navigate = useNavigate();
 
+    const syncCartWithBackend = async (userId) => {
+        const localCart = JSON.parse(localStorage.getItem('cart'));
+        if (localCart && localCart.length > 0) {
+            try {
+                await axios.post(`http://localhost:8081/api/cart/sync`, { userId, products: localCart });
+                localStorage.removeItem('cart');
+            } catch (error) {
+                console.error('Error syncing cart:', error);
+            }
+        }
+    };
+
     const handleLogin = async (e) => {
         e.preventDefault();
         setError('');
@@ -21,8 +33,10 @@ const Login = () => {
 
             login(user, token);
             localStorage.setItem('token', token);
-            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('userId', user._id);
             console.log('Token almacenado:', token);
+
+            await syncCartWithBackend(user._id);
             
             if (user.role === 'admin') {
                 navigate('/admin');
