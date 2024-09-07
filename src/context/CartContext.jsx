@@ -12,36 +12,64 @@ export const CartProvider = ({ children }) => {
             if (userId) {
                 try {
                     const response = await axios.get(`http://localhost:8081/api/cart/${userId}`);
-                    setCartItems(response.data.products);
+                    
+                    // Filtro para mantener solo los productos válidos
+                    const validProducts = response.data.products.filter(item => item.productId && item.productId.toy_name && item.productId.price);
+                    
+                    // Mostrar en consola los productos inválidos
+                    const invalidProducts = response.data.products.filter(item => !item.productId || !item.productId.toy_name || !item.productId.price);
+                    if (invalidProducts.length > 0) {
+                        console.warn("Productos inválidos en el carrito:", invalidProducts);
+                    }
+    
+                    setCartItems(validProducts); // Actualiza el carrito solo con productos válidos
                 } catch (error) {
                     console.error('Error fetching cart:', error);
                 }
             } else {
                 const localCart = JSON.parse(localStorage.getItem('cart')) || [];
-                setCartItems(localCart);
+    
+                // Filtro para mantener solo los productos válidos
+                const validProducts = localCart.filter(item => item.productId && item.productId.toy_name && item.productId.price);
+    
+                // Mostrar en consola los productos inválidos
+                const invalidProducts = localCart.filter(item => !item.productId || !item.productId.toy_name || !item.productId.price);
+                if (invalidProducts.length > 0) {
+                    console.warn("Productos inválidos en el carrito:", invalidProducts);
+                }
+    
+                setCartItems(validProducts); // Actualiza el carrito solo con productos válidos
+                localStorage.setItem('cart', JSON.stringify(validProducts)); // Guarda el carrito actualizado en localStorage
             }
         };
-
+    
         fetchCart();
     }, []);
+    
 
-    // Aquí estamos recibiendo solo productId y quantity, no product como objeto completo
-    const addToCart = async (productId, quantity) => {
-        console.log('Producto recibido en addToCart:', productId);
+    const addToCart = async (product, quantity) => {
+        console.log('Producto recibido en addToCart:', product);
     
         const userId = localStorage.getItem('userId');
         try {
             if (userId) {
-                const response = await axios.post(`http://localhost:8081/api/cart/${userId}`, { productId, quantity });
+                // Lógica para usuario autenticado
+                const response = await axios.post(`http://localhost:8081/api/cart/${userId}`, { productId: product._id, quantity });
                 setCartItems(response.data.products);
             } else {
+                // Lógica para carrito local (sin usuario)
                 const updatedCart = [...cartItems];
-                const productIndex = updatedCart.findIndex(item => item.productId === productId);
+                const productIndex = updatedCart.findIndex(item => item.productId._id === product._id);
     
                 if (productIndex >= 0) {
+                    // Si el producto ya está en el carrito, aumenta la cantidad
                     updatedCart[productIndex].quantity += quantity;
                 } else {
-                    updatedCart.push({ productId, quantity });
+                    // Si es un nuevo producto, agrégalo al carrito con todos sus detalles
+                    updatedCart.push({
+                        productId: product,
+                        quantity,
+                    });
                 }
     
                 setCartItems(updatedCart);
@@ -53,6 +81,7 @@ export const CartProvider = ({ children }) => {
             return false;
         }
     };
+    
     
 
     const removeFromCart = async (productId) => {

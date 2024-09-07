@@ -10,15 +10,21 @@ const CartItems = () => {
     }
 
     const handleIncrease = (productId) => {
-        addToCart(productId, 1);
+        const product = cartItems.find(item => item.productId._id === productId);
+    if (product) {
+        addToCart(product.productId, 1);
+    }
     };
 
     const handleDecrease = (productId, quantity) => {
+        const product = cartItems.find(item => item.productId._id === productId);
+    if (product) {
         if (quantity > 1) {
-            addToCart(productId, -1);
+            addToCart(product.productId, -1);
         } else {
             removeFromCart(productId);
         }
+    }
     };
 
     return (

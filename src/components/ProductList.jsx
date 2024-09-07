@@ -1,15 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react';
-import axios from '../axios';  // Ajusta la ruta si es necesario
+import axios from '../axios'; 
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { CartContext } from '../context/CartContext';
 
 const ProductList = () => {
-    const [products, setProducts] = useState([]);  // Estado para los productos
-    const [error, setError] = useState(null);  // Estado para errores
-    const { addToCart } = useContext(CartContext);  // Obtenemos el método addToCart del contexto del carrito
+    const [products, setProducts] = useState([]); 
+    const [error, setError] = useState(null); 
+    const { addToCart } = useContext(CartContext);
 
-    // Llamada a la API para obtener productos al montar el componente
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -17,7 +16,8 @@ const ProductList = () => {
                     withCredentials: true
                 });
                 if (Array.isArray(response.data)) {
-                    setProducts(response.data);  // Establece los productos en el estado
+                    setProducts(response.data);
+                    console.log("Productos obtenidos:", response.data)
                 } else {
                     console.error('Expected an array but got:', response.data);
                     setError('Formato inesperado en la respuesta');
@@ -33,8 +33,14 @@ const ProductList = () => {
 
     // Función para agregar productos al carrito
     const handleAddToCart = async (product, quantity) => {
+        console.log('producto seleccionado:', product);
         console.log('Producto a agregar en handleAddToCart:', product._id); 
-        const success = await addToCart(product._id, quantity);  
+        if (!product || !product._id) {
+            console.error('Faltan datos del producto', product);
+            return;
+        }
+
+        const success = await addToCart(product, quantity);  
         if (success) {
             Swal.fire({
                 position: 'top-end',
@@ -74,7 +80,11 @@ const ProductList = () => {
                             <p className="text-gray-700 mb-2">Stock: {product.stock}</p>
                             <p className="text-gray-600 mb-4">{product.description}</p>
                             <button
-                                onClick={() => handleAddToCart(product, 1)} 
+                                onClick={() => {
+                                    console.log("Producto seleccionado:", product);
+                                    handleAddToCart(product, 1)} 
+                                }
+                                    
                                 className="bg-blue-500 text-white py-1 px-2 rounded w-full"
                             >
                                 Agregar al carrito

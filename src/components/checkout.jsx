@@ -35,8 +35,15 @@ const Checkout = () => {
             return;
         }
 
+        const invalidItems = cartItems.filter(item => !item.productId || !item.productId._id);
+        if (invalidItems.length > 0) {
+            setErrorMessage('Some products in your cart are invalid. Please try again.');
+            console.error('Productos inválidos en el carrito:', invalidItems);
+            return;
+        }
+        
         setLoading(true);
-
+        
         try {
             const order = {
                 name,
