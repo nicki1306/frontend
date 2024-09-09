@@ -106,15 +106,6 @@ const Cart = () => {
                             </li>
                         ))}
                     </ul>
-
-                    {/* Botón para eliminar productos inválidos */}
-                    <button 
-                        onClick={handleRemoveInvalidProducts}
-                        className="bg-red-500 text-white py-2 px-4 rounded mt-4"
-                    >
-                        Eliminar productos inválidos
-                    </button>
-
                     {/* Total de la compra */}
                     <div className="mt-4">
                         <h3 className="text-2xl font-bold">Total: ${total.toFixed(2)}</h3>

@@ -53,7 +53,7 @@ const Home = () => {
                         products.map((product) => (
                             <div key={product._id} className="border rounded-lg shadow-lg p-4">
                                 <img
-                                    src={product.imageUrl} 
+                                    src={product.image} 
                                     alt={product.toy_name} 
                                     className="w-full h-48 object-cover mb-4 rounded"
                                 />

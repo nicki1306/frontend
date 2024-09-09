@@ -14,6 +14,7 @@ const ProductDetails = () => {
         const fetchProduct = async () => {
             try {
                 const response = await axios.get(`http://localhost:8081/api/products/${id}`);
+                console.log('Producto obtenido:', response.data);
                 setProduct(response.data);
             } catch (error) {
                 setError(error.response?.data?.message || 'Error fetching product details');
@@ -27,7 +28,7 @@ const ProductDetails = () => {
 
     const handleAddToCart = () => {
         if (product) {
-            addToCart(product._id, 1); 
+            addToCart(product, 1); 
         }
     };
 
@@ -45,23 +46,23 @@ const ProductDetails = () => {
 
     return (
         <div className="product-details bg-white p-4 rounded shadow-md">
-            <h1 className="text-2xl font-bold">{product.toy_name}</h1>
+            <h1 className="text-2xl font-bold">{product.toy_name || 'Producto sin nombre'}</h1>
             <img 
-                src={product.imageUrl} 
-                alt={`Image of ${product.toy_name}`} 
+                src={product.image || 'https://via.placeholder.com/150'} 
+                alt={`Image of ${product.toy_name || 'Producto sin nombre'}`} 
                 className="w-full h-48 object-cover rounded mt-4" 
             />
-            <p className="mt-2">{product.description}</p>
-            <p className="text-green-500 font-bold mt-2">Price: ${product.price}</p>
+            <p className="mt-2">{product.description || 'Descripción no disponible'}</p>
+            <p className="text-green-500 font-bold mt-2">Price: ${product.price || 0}</p>
             <button 
                 onClick={handleAddToCart} 
-                className={`mt-4 px-4 py-2 rounded ${product.stock > 0 ? 'bg-blue-500 text-white' : 'bg-gray-500 text-gray-300'}`} 
-                disabled={product.stock <= 0}
+                className="mt-4 px-4 py-2 rounded bg-blue-500 text-white"
             >
-                {product.stock > 0 ? 'Add to Cart' : 'Out of Stock'}
+                Add to Cart
             </button>
         </div>
     );
+    
 };
 
 export default ProductDetails;

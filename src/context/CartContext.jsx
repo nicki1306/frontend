@@ -22,7 +22,7 @@ export const CartProvider = ({ children }) => {
                         console.warn("Productos inválidos en el carrito:", invalidProducts);
                     }
     
-                    setCartItems(validProducts); // Actualiza el carrito solo con productos válidos
+                    setCartItems(validProducts); 
                 } catch (error) {
                     console.error('Error fetching cart:', error);
                 }
@@ -38,15 +38,14 @@ export const CartProvider = ({ children }) => {
                     console.warn("Productos inválidos en el carrito:", invalidProducts);
                 }
     
-                setCartItems(validProducts); // Actualiza el carrito solo con productos válidos
-                localStorage.setItem('cart', JSON.stringify(validProducts)); // Guarda el carrito actualizado en localStorage
+                setCartItems(validProducts); 
+                localStorage.setItem('cart', JSON.stringify(validProducts)); 
             }
         };
     
         fetchCart();
     }, []);
     
-
     const addToCart = async (product, quantity) => {
         console.log('Producto recibido en addToCart:', product);
     
@@ -81,8 +80,6 @@ export const CartProvider = ({ children }) => {
             return false;
         }
     };
-    
-    
 
     const removeFromCart = async (productId) => {
         const userId = localStorage.getItem('userId');
@@ -91,7 +88,7 @@ export const CartProvider = ({ children }) => {
                 const response = await axios.delete(`http://localhost:8081/api/cart/${userId}/${productId}`);
                 setCartItems(response.data.products);
             } else {
-                const updatedCart = cartItems.filter(item => item.productId !== productId);
+                const updatedCart = cartItems.filter(item => item.productId._id !== productId);
                 setCartItems(updatedCart);
                 localStorage.setItem('cart', JSON.stringify(updatedCart));
             }
@@ -100,8 +97,14 @@ export const CartProvider = ({ children }) => {
         }
     };
 
+    // Función para vaciar el carrito
+    const clearCart = () => {
+        setCartItems([]);
+        localStorage.removeItem('cart');
+    };
+
     return (
-        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart }}>
+        <CartContext.Provider value={{ cartItems, addToCart, removeFromCart, clearCart }}>
             {children}
         </CartContext.Provider>
     );
