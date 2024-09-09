@@ -1,27 +1,71 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
-const AdminPage = () => {
+const AdminDashboard = () => {
+    const [products, setProducts] = useState([]);
+    const [newProduct, setNewProduct] = useState({
+        name: '',
+        price: 0,
+        category: '',
+        stock: 0,
+        description: '',
+    });
+
+    useEffect(() => {
+        const fetchProducts = async () => {
+            const response = await axios.get('http://localhost:8081/api/products');
+            setProducts(response.data);
+        };
+        fetchProducts();
+    }, []);
+
+    const handleAddProduct = async () => {
+        try {
+            const response = await axios.post('http://localhost:8081/api/products', newProduct);
+            setProducts([...products, response.data]);
+            setNewProduct({ name: '', price: 0, category: '', stock: 0, description: '' });
+        } catch (error) {
+            console.error('Error al agregar producto:', error);
+        }
+    };
+
+    const handleDeleteProduct = async (id) => {
+        try {
+            await axios.delete(`http://localhost:8081/api/products/${id}`);
+            setProducts(products.filter(product => product._id !== id));
+        } catch (error) {
+            console.error('Error al eliminar producto:', error);
+        }
+    };
+
     return (
-        <div className="container mx-auto p-8">
-            <h1 className="text-3xl font-bold mb-8">Panel de Administración</h1>
+        <div className="admin-dashboard">
+            <h2>Admin Dashboard</h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <Link to="/admin/products" className="bg-blue-500 text-white p-6 rounded-lg hover:bg-blue-700">
-                    Cargar Producto
-                </Link>
-                <Link to="/admin/users" className="bg-red-500 text-white p-6 rounded-lg hover:bg-red-700">
-                    Eliminar Usuarios
-                </Link>
-                <Link to="/admin/billing" className="bg-green-500 text-white p-6 rounded-lg hover:bg-green-700">
-                    Panel de Facturación
-                </Link>
-                <Link to="/admin/orders" className="bg-yellow-500 text-white p-6 rounded-lg hover:bg-yellow-700">
-                    Panel de Pedidos
-                </Link>
+            <div>
+                <h3>Agregar Producto</h3>
+                <input type="text" placeholder="Nombre" value={newProduct.name} onChange={e => setNewProduct({ ...newProduct, name: e.target.value })} />
+                <input type="number" placeholder="Precio" value={newProduct.price} onChange={e => setNewProduct({ ...newProduct, price: e.target.value })} />
+                <input type="text" placeholder="Categoría" value={newProduct.category} onChange={e => setNewProduct({ ...newProduct, category: e.target.value })} />
+                <input type="number" placeholder="Stock" value={newProduct.stock} onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })} />
+                <textarea placeholder="Descripción" value={newProduct.description} onChange={e => setNewProduct({ ...newProduct, description: e.target.value })} />
+                <button onClick={handleAddProduct}>Agregar Producto</button>
+            </div>
+
+            <div>
+                <h3>Productos</h3>
+                <ul>
+                    {products.map(product => (
+                        <li key={product._id}>
+                            {product.name} - ${product.price}
+                            <button onClick={() => handleDeleteProduct(product._id)}>Eliminar</button>
+                        </li>
+                    ))}
+                </ul>
             </div>
         </div>
     );
 };
 
-export default AdminPage;
+export default AdminDashboard;
+

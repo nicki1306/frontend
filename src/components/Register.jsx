@@ -8,15 +8,31 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
+    const [successMessage, setSuccessMessage] = useState('');
     const navigate = useNavigate();
 
     const handleRegister = async (e) => {
         e.preventDefault();
         setLoading(true);
         setError('');
-        
+        setSuccessMessage('');
+
         if (!name || !email || !password) {
             setError('All fields are required');
+            setLoading(false);
+            return;
+        }
+
+        // Validar formato de correo
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setError('Invalid email format');
+            setLoading(false);
+            return;
+        }
+
+        if (password.length < 6) {
+            setError('La contraseña debe tener al menos 6 caracteres');
             setLoading(false);
             return;
         }
@@ -25,9 +41,12 @@ const Register = () => {
             const response = await axios.post('http://localhost:8081/api/auth/register', { name, email, password });
             console.log(response.data.message);
 
-            navigate('/login');
+            setSuccessMessage('registro exitoso, redirigiendo al login...');
+            setTimeout(() => {
+                navigate('/login'); 
+            }, 2000); 
         } catch (error) {
-            setError(error.response?.data?.message || error.message);
+            setError(error.response?.data?.message || 'An error occurred during registration');
         } finally {
             setLoading(false);
         }
@@ -39,6 +58,7 @@ const Register = () => {
                 <h2 className="text-3xl font-semibold text-center text-gray-800 mb-6">Register</h2>
                 <form onSubmit={handleRegister}>
                     {error && <div className="mb-4 text-red-500">{error}</div>}
+                    {successMessage && <div className="mb-4 text-green-500">{successMessage}</div>}
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">Name</label>
                         <input
