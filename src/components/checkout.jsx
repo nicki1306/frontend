@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../context/CartContext';
 import { useNavigate } from 'react-router-dom';
+import Payment from './payment.jsx';
 import axios from 'axios';
 
 const Checkout = () => {
@@ -13,6 +14,7 @@ const Checkout = () => {
     const [orderSuccess, setOrderSuccess] = useState(false);
     const [total, setTotal] = useState(0);
     const [loading, setLoading] = useState(false);
+    const [showPaymentForm, setShowPaymentForm] = useState(false);
     const navigate = useNavigate();
 
     // Calcular el total de la compra
@@ -24,6 +26,7 @@ const Checkout = () => {
                 }
                 return acc;
             }, 0);
+            console.log("Total calculado:", totalPrice);
             setTotal(totalPrice);
         };
         calculateTotal();
@@ -43,6 +46,8 @@ const Checkout = () => {
         }
         
         setLoading(true);
+
+        const calculatedTotal = cartItems.reduce((acc, item) => acc + (item.productId.price * item.quantity), 0);
         
         try {
             const order = {
@@ -54,17 +59,13 @@ const Checkout = () => {
                     productId: item.productId._id,
                     quantity: item.quantity
                 })),
-                total
+                total: calculatedTotal
             };
 
             await axios.post('http://localhost:8081/api/orders', order);
-            clearCart();
-            setOrderSuccess(true);
-            setName('');
-            setEmail('');
-            setAddress('');
-            setPaymentMethod('credit-card');
+            setShowPaymentForm(true); // Mostrar el formulario de pago
             setErrorMessage('');
+            setOrderSuccess(true);
         } catch (error) {
             console.error('Order placement failed:', error);
             setErrorMessage('Failed to place order. Please try again.');
@@ -73,15 +74,26 @@ const Checkout = () => {
         }
     };
 
+    const handlePaymentSuccess = () => {
+        clearCart(); // Limpiar el carrito solo después del pago exitoso
+        setOrderSuccess(true); // Actualiza el estado para mostrar el mensaje
+        setShowPaymentForm(false); // Ocultar el formulario de pago
+    };
+
+    if (showPaymentForm) {
+        console.log("Total enviado a Payment:", total);
+        return <Payment total={total} name={name} address={address} onPaymentSuccess={handlePaymentSuccess} />;
+    }
+
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-2xl mb-4">Checkout</h1>
             {orderSuccess ? (
                 <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
-                    <h2 className="text-xl">Thank you for your order!</h2>
-                    <p>Your order has been placed successfully.</p>
+                    <h2 className="text-xl">Gracias por elegirnos!</h2>
+                    <p>Su orden estara lista en 24 horas.</p>
                     <button onClick={() => navigate('/')} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-                        Go to Home
+                        Volver
                     </button>
                 </div>
             ) : (
@@ -107,7 +119,7 @@ const Checkout = () => {
                         />
                     </div>
                     <div>
-                        <label>Address</label>
+                        <label>Datos para el envio</label>
                         <input
                             type="text"
                             value={address}
@@ -117,7 +129,7 @@ const Checkout = () => {
                         />
                     </div>
                     <div>
-                        <label>Payment Method</label>
+                        <label>Medio de Pago</label>
                         <select
                             value={paymentMethod}
                             onChange={(e) => setPaymentMethod(e.target.value)}
@@ -137,7 +149,7 @@ const Checkout = () => {
                         disabled={loading}
                         className={`bg-blue-500 text-white py-2 px-4 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                     >
-                        {loading ? 'Placing Order...' : 'Place Order'}
+                        {loading ? 'Placing Order...' : 'Ya casi es tuyo, completar pago'}
                     </button>
                 </form>
             )}

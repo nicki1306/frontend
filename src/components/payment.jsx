@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 
-const Payment = () => {
+const Payment = ({ total, name, address, onPaymentSuccess }) => {
     const [formData, setFormData] = useState({
-        name: '',
-        address: '',
+        name: name || '',
+        address: address || '',
         cardNumber: '',
         expiryDate: '',
         cvv: ''
@@ -19,9 +19,12 @@ const Payment = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-//integrar con un servicio de pagos
-        console.log('Form submitted:', formData);
+        console.log('Payment submitted:', formData, 'Total:', total);
 
+        // Simula el procesamiento del pago y llama a `onPaymentSuccess`
+        onPaymentSuccess();  // Llama a la función de éxito de pago
+
+        // Resetear los datos del formulario
         setFormData({
             name: '',
             address: '',
@@ -33,7 +36,7 @@ const Payment = () => {
 
     return (
         <div className="max-w-4xl mx-auto p-6 bg-white shadow-md rounded-lg">
-            <h2 className="text-2xl font-bold mb-4">Payment Information</h2>
+            <h2 className="text-2xl font-bold mb-4">Completar información de pago</h2>
             <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="flex flex-col md:flex-row md:space-x-4">
                     <div className="flex-1">
@@ -106,7 +109,7 @@ const Payment = () => {
                     type="submit"
                     className="w-full py-2 px-4 bg-blue-500 text-white font-semibold rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
-                    Pay Now
+                    Pagar (${total.toFixed(2)})
                 </button>
             </form>
         </div>
