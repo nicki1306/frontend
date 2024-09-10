@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
+import Swal from 'sweetalert2';
 
 const ProductDetails = () => {
     const { id } = useParams(); 
@@ -29,6 +30,15 @@ const ProductDetails = () => {
     const handleAddToCart = () => {
         if (product) {
             addToCart(product, 1); 
+
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: `${product.toy_name} ha sido añadido al carrito`,
+                showConfirmButton: false,
+                timer: 1500
+            })
+
         }
     };
 

@@ -14,6 +14,7 @@ import Login from './components/login.jsx';
 import Register from './components/Register.jsx';
 import ProductList from './components/ProductList.jsx';
 import Home from './components/Home.jsx';
+import SearchResults from './components/search.jsx';
 
 
 function App() {
@@ -32,6 +33,7 @@ function App() {
               <Route path="/products/:id" element={<ProductDetails />} />
               <Route path="/cart" element={<Cart />} />
               <Route path="/cartItems" element={<CartItems />} />
+              <Route path="/search" element={<SearchResults />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/payment" element={<Payment />} />
               <Route path="/login" element={<Login />} />

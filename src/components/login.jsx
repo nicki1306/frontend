@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { AccountCircle } from '@mui/icons-material';
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -53,6 +54,9 @@ const Login = () => {
             <div className="w-full max-w-md bg-white shadow-md rounded-lg p-8">
                 <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Login</h2>
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+                <div className="flex justify-center mb-4">
+                    <AccountCircle style={{ fontSize: 80, color: 'gray' }} />
+                </div>
                 <form onSubmit={handleLogin}>
                     <div className="mb-4">
                         <label className="block text-sm font-medium text-gray-700">Email</label>
