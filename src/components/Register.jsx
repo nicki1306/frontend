@@ -46,7 +46,11 @@ const Register = () => {
                 navigate('/login'); 
             }, 2000); 
         } catch (error) {
-            setError(error.response?.data?.message || 'An error occurred during registration');
+            if (error.response && error.response.data.error === 'User already exists') {
+                setError('El correo electrónico ya está registrado.');
+        } else {
+            setError('El correo electronico ya esta registrado');
+        }
         } finally {
             setLoading(false);
         }
