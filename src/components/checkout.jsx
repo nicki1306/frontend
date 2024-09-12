@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { CartContext } from '../context/CartContext';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import Payment from './payment.jsx';
 import axios from 'axios';
+import { useAuth } from '../context/AuthContext';
 
 const Checkout = () => {
     const { cartItems, clearCart } = useContext(CartContext);
+    const { token } = useAuth(); 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
@@ -16,8 +18,18 @@ const Checkout = () => {
     const [loading, setLoading] = useState(false);
     const [showPaymentForm, setShowPaymentForm] = useState(false);
     const navigate = useNavigate();
+    const location = useLocation();
 
-    // Calcular el total de la compra
+    useEffect(() => {
+        if (!token) {
+            navigate('/login', { state: { from: location } });
+
+            console.error("No se encontró el token");
+            setErrorMessage("No estás autenticado");
+            return;
+        }
+    }, [token, navigate, location]);
+
     useEffect(() => {
         const calculateTotal = () => {
             const totalPrice = cartItems.reduce((acc, item) => {
@@ -26,29 +38,27 @@ const Checkout = () => {
                 }
                 return acc;
             }, 0);
-            console.log("Total calculado:", totalPrice);
             setTotal(totalPrice);
         };
         calculateTotal();
     }, [cartItems]);
 
     const handleOrder = async () => {
+
+        if (!token) {
+            setErrorMessage('No estás autenticado.');
+            return;  
+        }
+
         if (!name || !email || !address || cartItems.length === 0) {
-            setErrorMessage('Please fill in all fields and ensure your cart is not empty.');
+            setErrorMessage('Por favor, completa todos los campos y verifica que tu carrito no esté vacío.');
             return;
         }
 
-        const invalidItems = cartItems.filter(item => !item.productId || !item.productId._id);
-        if (invalidItems.length > 0) {
-            setErrorMessage('Some products in your cart are invalid. Please try again.');
-            console.error('Productos inválidos en el carrito:', invalidItems);
-            return;
-        }
-        
         setLoading(true);
 
         const calculatedTotal = cartItems.reduce((acc, item) => acc + (item.productId.price * item.quantity), 0);
-        
+
         try {
             const order = {
                 name,
@@ -62,96 +72,123 @@ const Checkout = () => {
                 total: calculatedTotal
             };
 
-            await axios.post('http://localhost:8081/api/orders', order);
-            setShowPaymentForm(true); // Mostrar el formulario de pago
+            console.log('Token:', token);
+
+            await axios.post('http://localhost:8081/api/orders', order, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            setShowPaymentForm(true);
             setErrorMessage('');
             setOrderSuccess(true);
         } catch (error) {
             console.error('Order placement failed:', error);
-            setErrorMessage('Failed to place order. Please try again.');
+            setErrorMessage('Falló la creación de la orden. Inténtalo de nuevo.');
         } finally {
             setLoading(false);
         }
     };
 
     const handlePaymentSuccess = () => {
-        clearCart(); // Limpiar el carrito solo después del pago exitoso
-        setOrderSuccess(true); // Actualiza el estado para mostrar el mensaje
-        setShowPaymentForm(false); // Ocultar el formulario de pago
+        clearCart();
+        setOrderSuccess(true);
+        setShowPaymentForm(false);
     };
 
     if (showPaymentForm) {
-        console.log("Total enviado a Payment:", total);
         return <Payment total={total} name={name} address={address} onPaymentSuccess={handlePaymentSuccess} />;
     }
 
     return (
-        <div className="container mx-auto p-4">
-            <h1 className="text-2xl mb-4">Checkout</h1>
+        <div className="container mx-auto py-8 px-4">
+            <h1 className="text-4xl font-bold mb-8 text-center">Finalizar Compra</h1>
             {orderSuccess ? (
-                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded">
-                    <h2 className="text-xl">Gracias por elegirnos!</h2>
-                    <p>Su orden estara lista en 24 horas.</p>
-                    <button onClick={() => navigate('/')} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-                        Volver
+                <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded shadow-lg">
+                    <h2 className="text-2xl font-bold">¡Gracias por elegirnos!</h2>
+                    <p className="mt-2">Su orden estará lista en 24 horas.</p>
+                    <button 
+                        onClick={() => navigate('/')} 
+                        className="mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                    >
+                        Volver al Inicio
                     </button>
                 </div>
             ) : (
-                <form onSubmit={(e) => e.preventDefault()} className="space-y-4">
-                    <div>
-                        <label>Name</label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                            className="border p-2 w-full"
-                        />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="space-y-4">
+                        <div>
+                            <label className="block text-lg font-medium mb-2">Nombre</label>
+                            <input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                required
+                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-teal-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-lg font-medium mb-2">Correo Electrónico</label>
+                            <input
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                required
+                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-teal-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-lg font-medium mb-2">Dirección de Envío</label>
+                            <input
+                                type="text"
+                                value={address}
+                                onChange={(e) => setAddress(e.target.value)}
+                                required
+                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-teal-500"
+                            />
+                        </div>
+                        <div>
+                            <label className="block text-lg font-medium mb-2">Método de Pago</label>
+                            <select
+                                value={paymentMethod}
+                                onChange={(e) => setPaymentMethod(e.target.value)}
+                                className="border border-gray-300 rounded-lg p-3 w-full focus:outline-none focus:border-teal-500"
+                            >
+                                <option value="credit-card">Tarjeta de Crédito</option>
+                                <option value="paypal">PayPal</option>
+                                <option value="mercado-pago">Mercado Pago</option>
+                                <option value="transferencia">Transferencia Bancaria</option>
+                            </select>
+                        </div>
+                        <div className="mt-4">
+                            <h3 className="text-2xl font-bold">Total: ${total.toFixed(2)}</h3>
+                        </div>
                     </div>
-                    <div>
-                        <label>Email</label>
-                        <input
-                            type="email"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                            className="border p-2 w-full"
-                        />
+
+                    <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
+                        <h2 className="text-2xl font-bold mb-4">Resumen de la Compra</h2>
+                        <ul className="space-y-3">
+                            {cartItems.map((item, index) => (
+                                <li key={index} className="border-b pb-3">
+                                    <h3 className="text-lg font-semibold">{item.productId.toy_name}</h3>
+                                    <p>Cantidad: {item.quantity}</p>
+                                    <p>Precio: ${item.productId.price.toFixed(2)}</p>
+                                </li>
+                            ))}
+                        </ul>
                     </div>
-                    <div>
-                        <label>Datos para el envio</label>
-                        <input
-                            type="text"
-                            value={address}
-                            onChange={(e) => setAddress(e.target.value)}
-                            required
-                            className="border p-2 w-full"
-                        />
-                    </div>
-                    <div>
-                        <label>Medio de Pago</label>
-                        <select
-                            value={paymentMethod}
-                            onChange={(e) => setPaymentMethod(e.target.value)}
-                            className="border p-2 w-full"
-                        >
-                            <option value="credit-card">Credit Card</option>
-                            <option value="paypal">PayPal</option>
-                        </select>
-                    </div>
-                    <div className="mt-4">
-                        <h3 className="text-xl font-bold">Total: ${total.toFixed(2)}</h3>
-                    </div>
+
                     {errorMessage && <p className="text-red-500">{errorMessage}</p>}
                     <button
                         type="button"
                         onClick={handleOrder}
                         disabled={loading}
-                        className={`bg-blue-500 text-white py-2 px-4 rounded ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                        className={`w-full bg-teal-500 text-white font-bold py-3 px-6 rounded-lg mt-6 transition duration-200 ease-in-out ${loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-teal-600'}`}
                     >
-                        {loading ? 'Placing Order...' : 'Ya casi es tuyo, completar pago'}
+                        {loading ? 'Procesando Orden...' : 'Completar Pago'}
                     </button>
-                </form>
+                </div>
             )}
         </div>
     );

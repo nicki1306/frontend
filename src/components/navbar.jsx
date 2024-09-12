@@ -3,25 +3,20 @@ import { Link, NavLink } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext.jsx';
 import { CartContext } from '../context/CartContext.jsx';
-import { Menu, Search as SearchIcon } from '@mui/icons-material';  // Asegúrate de importar el ícono correctamente
-import { IconButton, Menu as MuiMenu, MenuItem } from '@mui/material';
+import { Menu, Search as SearchIcon } from '@mui/icons-material';
 import Swal from 'sweetalert2';
 
 const Navbar = () => {
-    const { cartItems, addToCart } = useContext(CartContext);
+    const { cartItems } = useContext(CartContext);
     const { user, logout } = useAuth();
-    const [anchorEl, setAnchorEl] = useState(null);
+    const [isOpen, setIsOpen] = useState(false); // Menú cerrado al iniciar
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
-    const handleMenuClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleMenuClose = () => {
-        setAnchorEl(null);
+    const handleToggleMenu = () => {
+        setIsOpen(!isOpen); // Cambia el estado de isOpen al hacer clic en el botón
     };
 
     const handleSearch = (e) => {
@@ -40,6 +35,17 @@ const Navbar = () => {
             showConfirmButton: false,
             timer: 1500
         });
+    };
+
+    const handleLogout = () => {
+        logout();
+        setIsOpen(false); // Cierra el menú al cerrar sesión
+        navigate('/');
+    };
+
+    const handleMenuOption = (path) => {
+        setIsOpen(false); // Cierra el menú al seleccionar una opción
+        navigate(path);
     };
 
     return (
@@ -92,37 +98,95 @@ const Navbar = () => {
                         </>
                     )}
 
-                    {/* Menú Hamburger */}
+                    {/* Menú Hamburger para usuarios autenticados */}
                     {user && (
                         <>
-                            <IconButton onClick={handleMenuClick}>
-                                <Menu className="text-white" />
-                            </IconButton>
-                            <MuiMenu
-                                anchorEl={anchorEl}
-                                open={Boolean(anchorEl)}
-                                onClose={handleMenuClose}
-                                slotProps={{
-                                    paper: {
-                                        style: {
-                                            backgroundColor: 'black',
-                                            color: 'white',
-                                        }
-                                    }
-                                }}
+                            <button
+                                onClick={handleToggleMenu}
+                                className="text-white hover:bg-gray-700 px-3 py-2 rounded-md"
                             >
-                                <MenuItem onClick={handleMenuClose}>Open My Business</MenuItem>
-                                <MenuItem onClick={handleMenuClose}>My Purchases</MenuItem>
-                                {user.role === 'admin' && (
-                                    <>
-                                        <MenuItem onClick={handleMenuClose}>My Sales</MenuItem>
-                                        <MenuItem onClick={handleMenuClose}>Control Panel</MenuItem>
-                                    </>
-                                )}
-                                <MenuItem onClick={handleMenuClose}>Claims and Returns</MenuItem>
-                                <MenuItem onClick={handleMenuClose}>Privacy Policy</MenuItem>
-                                <MenuItem onClick={() => { logout(); handleMenuClose(); }}>Logout</MenuItem>
-                            </MuiMenu>
+                                <Menu />
+                            </button>
+                            {/* Menú hamburguesa desplazándose desde la derecha */}
+                            <div
+                                className={`fixed top-0 right-0 h-full bg-black text-white w-64 z-50 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out`}
+                            >
+                                <div className="p-4">
+                                    {/* Saludo al usuario */}
+                                    <h2 className="text-3xl font-bold text-teal-400 mb-6">Hola, {user.name}!</h2>
+                                    <ul className="space-y-4">
+                                        <li>
+                                            <button
+                                                onClick={() => handleMenuOption('/profile')}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                            >
+                                                Mi Perfil
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                onClick={() => handleMenuOption('/my-orders')}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                            >
+                                                Mis Compras
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                onClick={() => handleMenuOption('/business')}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                            >
+                                                Abrir mi Negocio
+                                            </button>
+                                        </li>
+
+                                        {user.role === 'admin' && (
+                                            <>
+                                                <li>
+                                                    <button
+                                                        onClick={() => handleMenuOption('/admin/sales')}
+                                                        className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                                    >
+                                                        Mis Ventas
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button
+                                                        onClick={() => handleMenuOption('/admin/control-panel')}
+                                                        className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                                    >
+                                                        Control Panel
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    <button
+                                                        onClick={() => handleMenuOption('/admin/claims')}
+                                                        className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                                    >
+                                                        Reclamos y Devoluciones
+                                                    </button>
+                                                </li>
+                                            </>
+                                        )}
+                                        <li>
+                                            <button
+                                                onClick={() => handleMenuOption('/billing')}
+                                                className="w-full text-left px-4 py-2 hover:bg-gray-700 rounded-md"
+                                            >
+                                                Facturación
+                                            </button>
+                                        </li>
+                                        <li>
+                                            <button
+                                                onClick={handleLogout}
+                                                className="w-full text-left px-4 py-2 hover:bg-red-700 rounded-md text-red-500"
+                                            >
+                                                Logout
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                         </>
                     )}
                 </div>

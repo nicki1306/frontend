@@ -31,7 +31,6 @@ const ProductList = () => {
         fetchProducts();
     }, []);
 
-    // Función para agregar productos al carrito
     const handleAddToCart = async (product, quantity) => {
         console.log('producto seleccionado:', product);
         console.log('Producto a agregar en handleAddToCart:', product._id); 

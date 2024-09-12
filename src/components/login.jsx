@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AccountCircle } from '@mui/icons-material';
 
@@ -10,12 +10,18 @@ const Login = () => {
     const [error, setError] = useState('');
     const { login } = useAuth(); 
     const navigate = useNavigate();
+    const location = useLocation();
 
-    const syncCartWithBackend = async (userId) => {
+    const syncCartWithBackend = async (userId, token) => {
         const localCart = JSON.parse(localStorage.getItem('cart'));
         if (localCart && localCart.length > 0) {
             try {
-                await axios.post(`http://localhost:8081/api/cart/sync`, { userId, products: localCart });
+                await axios.post(`http://localhost:8081/api/cart/sync`, { userId, products: localCart }, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+
                 localStorage.removeItem('cart');
             } catch (error) {
                 console.error('Error syncing cart:', error);
@@ -27,23 +33,28 @@ const Login = () => {
         e.preventDefault(); 
         try {
             const response = await axios.post('http://localhost:8081/api/user/login', { email, password });
-
             const { user, token } = response.data;
-
-            login(token); 
-
+            login(user, token);
+    
             await syncCartWithBackend(user._id);
-
-            if (user.role === 'admin') {
-                navigate('/admin-dashboard');
+    
+            const from = location.state?.from?.pathname;
+            if (from) {
+                navigate(from);
             } else {
-                navigate('/user-dashboard');
+
+                if (user.role === 'admin') {
+                    navigate('/admin-dashboard');
+                } else {
+                    navigate('/user-dashboard');
+                }
             }
         } catch (error) {
             setError('Error al iniciar sesión. Por favor, verifica tus credenciales.');
             console.error('Error al iniciar sesión:', error);
         }
     };
+    
 
     const handleOAuth = (provider) => {
         window.location.href = `http://localhost:8081/api/auth/${provider}`;
