@@ -20,6 +20,7 @@ import MyOrders from "./components/Orders.jsx";
 import BusinessPage from "./components/business.jsx";
 import SalesAdmin from "./components/salesAdmin.jsx";
 import ControlPanel from "./components/Control-Panel.jsx";
+import Ticket from "./components/ticket.jsx";
 
 function App() {
   return (
@@ -45,6 +46,7 @@ function App() {
               <Route path="/admin" element={<AdminPage />} />
               <Route path="/profile" element={<UserProfile />} />
               <Route path="/my-orders" element={<MyOrders />} />
+              <Route path="/ticket" element={<Ticket />} />
               <Route path="/business" element={<BusinessPage />} />
               <Route path="/admin/sales" element={<SalesAdmin />} />
               <Route path="/admin/control-panel" element={<ControlPanel />} />

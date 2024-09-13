@@ -1,11 +1,13 @@
 import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext'; 
+import { useNavigate } from 'react-router-dom';
 
 const MyOrders = () => {
     const [orders, setOrders] = useState([]);
     const [error, setError] = useState(null);
     const { token } = useAuth(); 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchOrders = async () => {
@@ -25,6 +27,12 @@ const MyOrders = () => {
         fetchOrders();
     }, [token]);
 
+    const handleViewTicket = (order) => {
+        console.log(order);
+        navigate('/ticket', { state: { order } });
+    };
+
+
     return (
         <div className="container mx-auto py-8 px-4">
             <h1 className="text-4xl font-bold mb-8 text-center">Mis Compras</h1>
@@ -40,12 +48,20 @@ const MyOrders = () => {
                                 <span className="font-bold text-lg">Orden #{order._id}</span>
                                 <span className="text-gray-600">Total: ${order.total.toFixed(2)}</span>
                             </div>
-                            <button
-                                className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
-                                onClick={() => console.log(`Ver envío para la orden ${order._id}`)} 
-                            >
-                                Ver Envío
-                            </button>
+                            <div className="flex space-x-4">
+                                <button
+                                    className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                                    onClick={() => console.log(`Ver envío para la orden ${order._id}`)}
+                                >
+                                    Ver Envío
+                                </button>
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
+                                    onClick={() => handleViewTicket(order)}
+                                >
+                                    Ver Ticket de Compra
+                                </button>
+                            </div>
                         </li>
                     ))}
                 </ul>
