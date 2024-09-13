@@ -38,7 +38,7 @@ const Login = () => {
     
             await syncCartWithBackend(user._id);
     
-            const from = location.state?.from?.pathname;
+            const from = location.state?.from?.pathname || '/checkout';
             if (from) {
                 navigate(from);
             } else {

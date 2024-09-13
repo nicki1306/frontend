@@ -44,6 +44,14 @@ const Checkout = () => {
     }, [cartItems]);
 
     const handleOrder = async () => {
+        console.log('Datos capturados antes de enviar la orden:', {
+            name,
+            email,
+            address,
+            paymentMethod,
+            cartItems,
+            total,
+        });
 
         if (!token) {
             setErrorMessage('No estás autenticado.');
@@ -71,8 +79,8 @@ const Checkout = () => {
                 })),
                 total: calculatedTotal
             };
-
-            console.log('Token:', token);
+            console.log('Datos de la orden antes de enviar:', order);
+            console.log('Token que se envía en la solicitud:', token);
 
             await axios.post('http://localhost:8081/api/orders', order, {
                 headers: {
@@ -84,7 +92,7 @@ const Checkout = () => {
             setErrorMessage('');
             setOrderSuccess(true);
         } catch (error) {
-            console.error('Order placement failed:', error);
+            console.error('Error al enviar la orden:', error);
             setErrorMessage('Falló la creación de la orden. Inténtalo de nuevo.');
         } finally {
             setLoading(false);
