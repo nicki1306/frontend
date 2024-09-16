@@ -129,6 +129,7 @@ const Home = () => {
                                         <p className="text-green-600 text-xl font-bold">
                                             ${product.salePrice}
                                         </p>
+                                        <p className="text-gray-600">Stock disponible: {product.stock}</p>
                                         <div className="mt-2">
                                             <button
                                                 onClick={() => handleAddToCart(product)}
@@ -205,6 +206,7 @@ const Home = () => {
                             <p className="text-lg font-bold text-gray-800 text-center">
                                 ${product.price}
                             </p>
+                            <p className="text-gray-600 text-center">Stock disponible: {product.stock}</p>
                             <div className="flex justify-between mt-4">
                                 <button
                                     onClick={() => handleAddToCart(product)}
