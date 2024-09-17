@@ -47,7 +47,7 @@ const Ticket = () => {
                                     />
                                 ) : (
                                     <img
-                                        src={item.productId.image} 
+                                        src="/path/to/default-image.jpg" 
                                         alt="Imagen no disponible"
                                         className="w-16 h-16 object-cover mb-2"
                                     />
