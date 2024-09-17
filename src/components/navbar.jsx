@@ -9,14 +9,14 @@ import Swal from 'sweetalert2';
 const Navbar = () => {
     const { cartItems } = useContext(CartContext);
     const { user, logout } = useAuth();
-    const [isOpen, setIsOpen] = useState(false); // Menú cerrado al iniciar
+    const [isOpen, setIsOpen] = useState(false); 
     const [searchTerm, setSearchTerm] = useState('');
     const navigate = useNavigate();
     
     const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
 
     const handleToggleMenu = () => {
-        setIsOpen(!isOpen); // Cambia el estado de isOpen al hacer clic en el botón
+        setIsOpen(!isOpen); 
     };
 
     const handleSearch = (e) => {
@@ -39,12 +39,12 @@ const Navbar = () => {
 
     const handleLogout = () => {
         logout();
-        setIsOpen(false); // Cierra el menú al cerrar sesión
+        setIsOpen(false); 
         navigate('/');
     };
 
     const handleMenuOption = (path) => {
-        setIsOpen(false); // Cierra el menú al seleccionar una opción
+        setIsOpen(false); 
         navigate(path);
     };
 
@@ -112,6 +112,12 @@ const Navbar = () => {
                                 className={`fixed top-0 right-0 h-full bg-black text-white w-64 z-50 transform ${isOpen ? 'translate-x-0' : 'translate-x-full'} transition-transform duration-300 ease-in-out`}
                             >
                                 <div className="p-4">
+                                    <button
+                                        onClick={handleToggleMenu}
+                                        className="text-white hover:bg-gray-700 px-3 py-2 rounded-md"
+                                    >
+                                        Cerrar
+                                    </button>
                                     {/* Saludo al usuario */}
                                     <h2 className="text-3xl font-bold text-teal-400 mb-6">Hola, {user.name}!</h2>
                                     <ul className="space-y-4">
