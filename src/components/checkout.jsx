@@ -23,8 +23,6 @@ const Checkout = () => {
     useEffect(() => {
         if (!token) {
             navigate('/login', { state: { from: location } });
-
-            console.error("No se encontró el token");
             setErrorMessage("No estás autenticado");
             return;
         }
@@ -179,6 +177,7 @@ const Checkout = () => {
                         <ul className="space-y-3">
                             {cartItems.map((item, index) => (
                                 <li key={index} className="border-b pb-3">
+                                    <img src={item.productId.image} alt={item.productId.toy_name} className="w-16 h-16 object-cover mb-2" />
                                     <h3 className="text-lg font-semibold">{item.productId.toy_name}</h3>
                                     <p>Cantidad: {item.quantity}</p>
                                     <p>Precio: ${item.productId.price.toFixed(2)}</p>

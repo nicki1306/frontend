@@ -36,7 +36,7 @@ const Login = () => {
             const { user, token } = response.data;
             login(user, token);
     
-            await syncCartWithBackend(user._id);
+            await syncCartWithBackend(user._id, token);
     
             const from = location.state?.from?.pathname || '/checkout';
             if (from) {
@@ -46,7 +46,7 @@ const Login = () => {
                 if (user.role === 'admin') {
                     navigate('/admin-dashboard');
                 } else {
-                    navigate('/user-dashboard');
+                    navigate('/');
                 }
             }
         } catch (error) {

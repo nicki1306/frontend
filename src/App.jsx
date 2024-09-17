@@ -24,9 +24,9 @@ import Ticket from "./components/ticket.jsx";
 
 function App() {
   return (
-    <AuthProvider>
-      <CartProvider>
-        <Router>
+    <Router> 
+      <AuthProvider>
+        <CartProvider>
           <Navbar />
           <header className="app-header min-h-60">
             <p>Bienvenido a la tienda de juguetes</p>
@@ -52,9 +52,9 @@ function App() {
               <Route path="/admin/control-panel" element={<ControlPanel />} />
             </Routes>
           </div>
-        </Router>
-      </CartProvider>
-    </AuthProvider>
+        </CartProvider>
+      </AuthProvider>
+    </Router>
   );
 }
 

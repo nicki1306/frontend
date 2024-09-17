@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useCart } from "../context/CartContext";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Home = () => {
     const navigate = useNavigate();
+    const { addToCart } = useCart();
     const [products, setProducts] = useState([]);
     const [onSaleProducts, setOnSaleProducts] = useState([]);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -59,6 +61,7 @@ const Home = () => {
     }, []);
 
     const handleAddToCart = (product) => {
+        addToCart(product, 1);
         Swal.fire({
             title: "¡Producto añadido!",
             text: `${product.toy_name} ha sido agregado al carrito`,
