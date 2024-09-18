@@ -7,7 +7,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Checkout = () => {
     const { cartItems, clearCart } = useContext(CartContext);
-    const { token } = useAuth(); 
+    const { token } = useAuth();
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [address, setAddress] = useState('');
@@ -53,7 +53,7 @@ const Checkout = () => {
 
         if (!token) {
             setErrorMessage('No estás autenticado.');
-            return;  
+            return;
         }
 
         if (!name || !email || !address || cartItems.length === 0) {
@@ -77,10 +77,8 @@ const Checkout = () => {
                 })),
                 total: calculatedTotal
             };
-            console.log('Datos de la orden antes de enviar:', order);
-            console.log('Token que se envía en la solicitud:', token);
 
-            await axios.post('http://localhost:8081/api/orders', order, {
+            const response = await axios.post('http://localhost:8081/api/orders', order, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },
@@ -88,7 +86,7 @@ const Checkout = () => {
 
             setShowPaymentForm(true);
             setErrorMessage('');
-            setOrderSuccess(true);
+
         } catch (error) {
             console.error('Error al enviar la orden:', error);
             setErrorMessage('Falló la creación de la orden. Inténtalo de nuevo.');
@@ -101,6 +99,23 @@ const Checkout = () => {
         clearCart();
         setOrderSuccess(true);
         setShowPaymentForm(false);
+
+        setTimeout(() => {
+            navigate("/ticket", {
+                state: {
+                    order: {
+                        name, email, address, total,
+                        items: cartItems.map(item => ({
+                            productId: item.productId._id,
+                            quantity: item.quantity,
+                            price: item.productId.price,
+                            toy_name: item.productId.toy_name,
+
+                        })),
+                    }
+                }
+            });
+        }, 3000);
     };
 
     if (showPaymentForm) {
@@ -114,12 +129,8 @@ const Checkout = () => {
                 <div className="bg-green-100 border border-green-400 text-green-700 p-4 rounded shadow-lg">
                     <h2 className="text-2xl font-bold">¡Gracias por elegirnos!</h2>
                     <p className="mt-2">Su orden estará lista en 24 horas.</p>
-                    <button 
-                        onClick={() => navigate('/')} 
-                        className="mt-4 bg-teal-500 hover:bg-teal-600 text-white font-bold py-2 px-4 rounded transition duration-200 ease-in-out"
-                    >
-                        Volver al Inicio
-                    </button>
+                    <p className="mt-2">Puedes ver tu factura en la seccion Mis Compras dentro del menu
+                    </p>
                 </div>
             ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -177,7 +188,6 @@ const Checkout = () => {
                         <ul className="space-y-3">
                             {cartItems.map((item, index) => (
                                 <li key={index} className="border-b pb-3">
-                                    <img src={item.productId.image} alt={item.productId.toy_name} className="w-16 h-16 object-cover mb-2" />
                                     <h3 className="text-lg font-semibold">{item.productId.toy_name}</h3>
                                     <p>Cantidad: {item.quantity}</p>
                                     <p>Precio: ${item.productId.price.toFixed(2)}</p>

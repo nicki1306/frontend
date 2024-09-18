@@ -8,6 +8,12 @@ const Ticket = () => {
         return <div>No se encontró la información del ticket.</div>;
     }
 
+    if (!order.items || !Array.isArray(order.items)) {
+        return <div>No se encontraron productos en la orden.</div>;
+    }
+
+
+
     return (
         <div className="container mx-auto py-8 px-4">
             <h1 className="text-4xl font-bold mb-8 text-center text-teal-600">
@@ -29,29 +35,16 @@ const Ticket = () => {
                         Método de Pago:
                         <span className="font-semibold text-gray-900">
                             {" "}
-                            {order.paymentMethod}
+                            {order.paymentMethod || 'N/A'}
                         </span>
                     </p>
                 </div>
 
                 <div className="ticket-section">
-                    <h2>Productos Comprados</h2>
+                    <h2 className="text-lg font-semibold text-gray-800 mb-4">Productos Comprados</h2>
                     <ul>
                         {order.items.map((item, index) => (
-                            <li key={index} className="flex items-center space-x-4 mb-4">
-                                {item.productId && item.productId.image ? (
-                                    <img
-                                        src={item.productId.image}
-                                        alt={item.productId.toy_name || 'Producto'}
-                                        className="w-16 h-16 object-cover mb-2"
-                                    />
-                                ) : (
-                                    <img
-                                        src="/path/to/default-image.jpg" 
-                                        alt="Imagen no disponible"
-                                        className="w-16 h-16 object-cover mb-2"
-                                    />
-                                )}
+                            <li key={index} className="mb-4">
                                 <div>
                                     <h3 className="text-lg font-semibold">
                                         {item.productId && item.productId.toy_name
