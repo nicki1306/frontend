@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2'; 
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 const SalesAdmin = () => {
-    const [salesData, setSalesData] = useState([]);
+    const [salesData, setSalesData] = useState([]); 
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
@@ -12,7 +15,9 @@ const SalesAdmin = () => {
         const fetchSalesData = async () => {
             try {
                 const response = await axios.get('http://localhost:8081/api/orders');
-                setSalesData(response.data.data);
+
+                const data = response.data?.data || [];  
+                setSalesData(data);
                 setLoading(false);
             } catch (err) {
                 setError('Error al obtener los datos de ventas.');
@@ -25,11 +30,11 @@ const SalesAdmin = () => {
 
     // Configuración de los datos del gráfico
     const salesChartData = {
-        labels: salesData.map(order => new Date(order.createdAt).toLocaleDateString()),
+        labels: salesData.map(order => new Date(order.createdAt).toLocaleDateString()),  
         datasets: [
             {
                 label: 'Ventas Totales ($)',
-                data: salesData.map(order => order.total),
+                data: salesData.map(order => order.total), 
                 backgroundColor: 'rgba(75, 192, 192, 0.6)',
                 borderColor: 'rgba(75, 192, 192, 1)',
                 borderWidth: 1,
@@ -77,20 +82,26 @@ const SalesAdmin = () => {
                         </tr>
                     </thead>
                     <tbody>
-                        {salesData.map((order) => (
-                            <tr key={order._id}>
-                                <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
-                                <td className="border px-4 py-2">{order.name}</td>
-                                <td className="border px-4 py-2">
-                                    {order.items.map((item) => (
-                                        <p key={item.productId}>
-                                            {item.quantity} x {item.productId} {/* Cambia `productId` por `productName` si tienes ese dato */}
-                                        </p>
-                                    ))}
-                                </td>
-                                <td className="border px-4 py-2">${order.total.toFixed(2)}</td>
+                        {salesData.length > 0 ? (
+                            salesData.map((order) => (
+                                <tr key={order._id}>
+                                    <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
+                                    <td className="border px-4 py-2">{order.user?.name || 'Cliente Anónimo'}</td>  {/* Ajusta si `order.user` no existe */}
+                                    <td className="border px-4 py-2">
+                                        {order.items.map((item) => (
+                                            <p key={item.productId}>
+                                                {item.quantity} x {item.productName || item.productId} {/* Usa `productName` si existe */}
+                                            </p>
+                                        ))}
+                                    </td>
+                                    <td className="border px-4 py-2">${order.total.toFixed(2)}</td>
+                                </tr>
+                            ))
+                        ) : (
+                            <tr>
+                                <td colSpan="4" className="text-center py-4 text-gray-500">No hay ventas disponibles.</td>
                             </tr>
-                        ))}
+                        )}
                     </tbody>
                 </table>
             </div>

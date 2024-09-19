@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useCart } from "../context/CartContext";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const Home = () => {
@@ -73,14 +73,16 @@ const Home = () => {
     const handleViewMore = (product) => {
         navigate(`/products/${product._id}`);
     };
-    
 
     const nextSlide = () => {
         setCurrentIndex((prevIndex) => (prevIndex + 1) % onSaleProducts.length);
     };
 
     const prevSlide = () => {
-        setCurrentIndex((prevIndex) => (prevIndex - 1 + onSaleProducts.length) % onSaleProducts.length);
+        setCurrentIndex(
+            (prevIndex) =>
+                (prevIndex - 1 + onSaleProducts.length) % onSaleProducts.length
+        );
     };
 
     useEffect(() => {
@@ -95,12 +97,33 @@ const Home = () => {
 
     return (
         <div>
-            <header className="text-center py-4 bg-gray-200">
-                <h1 className="text-2xl font-bold text-gray-700">
-                    Bienvenido a la tienda de juguetes
-                </h1>
-                <p className="text-gray-500">Explora nuestros productos</p>
-            </header>
+            {/* Banner con imagen de fondo */}
+            <div className="relative bg-gray-900">
+                <div
+                    className="h-80 bg-cover bg-center"
+                    style={{
+                        backgroundImage:
+                            "url('https://source.unsplash.com/1600x900/?toys,kids')",
+                    }}
+                >
+                    <div className="flex items-center justify-center h-full bg-black bg-opacity-50">
+                        <div className="text-center text-white">
+                            <h1 className="text-5xl font-bold mb-4">
+                                ¡Bienvenido a nuestra Tienda de Juguetes!
+                            </h1>
+                            <p className="text-lg mb-6">
+                                Encuentra los mejores juguetes para todas las edades.
+                            </p>
+                            <Link
+                                to="/products"
+                                className="inline-block px-8 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition"
+                            >
+                                Explorar Productos
+                            </Link>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             {/* Carrusel de productos en oferta */}
             <section className="container mx-auto py-2 bg-gradient-to-r from-blue-900 to-cyan-300 rounded-lg shadow-lg relative">
@@ -127,12 +150,18 @@ const Home = () => {
                                             alt={product.toy_name}
                                             className="w-full h-48 object-cover rounded mb-2"
                                         />
-                                        <h3 className="text-lg font-semibold">{product.toy_name}</h3>
-                                        <p className="text-gray-500 line-through">${product.price}</p>
+                                        <h3 className="text-lg font-semibold">
+                                            {product.toy_name}
+                                        </h3>
+                                        <p className="text-gray-500 line-through">
+                                            ${product.price}
+                                        </p>
                                         <p className="text-green-600 text-xl font-bold">
                                             ${product.salePrice}
                                         </p>
-                                        <p className="text-gray-600">Stock disponible: {product.stock}</p>
+                                        <p className="text-gray-600">
+                                            Stock disponible: {product.stock}
+                                        </p>
                                         <div className="mt-2">
                                             <button
                                                 onClick={() => handleAddToCart(product)}
@@ -175,9 +204,10 @@ const Home = () => {
                                         <button
                                             key={index}
                                             onClick={() => setCurrentIndex(index)}
-                                            className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                                                index === currentIndex ? "bg-white scale-125" : "bg-gray-400"
-                                            }`}
+                                            className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentIndex
+                                                ? "bg-white scale-125"
+                                                : "bg-gray-400"
+                                                }`}
                                             aria-label={`Go to slide ${index + 1}`}
                                         />
                                     ))}
@@ -209,7 +239,9 @@ const Home = () => {
                             <p className="text-lg font-bold text-gray-800 text-center">
                                 ${product.price}
                             </p>
-                            <p className="text-gray-600 text-center">Stock disponible: {product.stock}</p>
+                            <p className="text-gray-600 text-center">
+                                Stock disponible: {product.stock}
+                            </p>
                             <div className="flex justify-between mt-4">
                                 <button
                                     onClick={() => handleAddToCart(product)}

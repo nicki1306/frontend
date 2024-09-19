@@ -28,9 +28,6 @@ function App() {
       <AuthProvider>
         <CartProvider>
           <Navbar />
-          <header className="app-header min-h-60">
-            <p>Bienvenido a la tienda de juguetes</p>
-          </header>
           <div className="App">
             <Routes>
               <Route path="/" element={<Home />} />
