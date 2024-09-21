@@ -1,8 +1,8 @@
 export const getBaseUrl = () => {
     const isProduction = import.meta.env.MODE === 'production';
     if (isProduction) {
-        return import.meta.env.VITE_API_URL_PROD;
+        return 'https://backend-production-55b2.up.railway.app';
     } else {
-        return import.meta.env.VITE_API_URL_DEV;
+        return 'http://localhost:8081';
     }
 };
