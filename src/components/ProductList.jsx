@@ -3,16 +3,20 @@ import axios from '../axios';
 import Swal from 'sweetalert2';
 import 'sweetalert2/dist/sweetalert2.min.css';
 import { CartContext } from '../context/CartContext';
+import { get } from 'mongoose';
+import { getBaseUrl } from '../Utils/deploy';
 
 const ProductList = () => {
     const [products, setProducts] = useState([]); 
     const [error, setError] = useState(null); 
     const { addToCart } = useContext(CartContext);
 
+    const BaseUrl = getBaseUrl(); 
+
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/products', {
+                const response = await axios.get(`${BaseUrl}/api/products`, {
                     withCredentials: true
                 });
                 if (Array.isArray(response.data)) {

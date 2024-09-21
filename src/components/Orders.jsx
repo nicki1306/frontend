@@ -2,6 +2,7 @@ import axios from 'axios';
 import { useEffect, useState } from 'react';
 import { useAuth } from '../context/AuthContext'; 
 import { useNavigate } from 'react-router-dom';
+import { getBaseUrl } from '../Utils/deploy';
 
 const MyOrders = () => {
     const [orders, setOrders] = useState([]);
@@ -9,10 +10,12 @@ const MyOrders = () => {
     const { token } = useAuth(); 
     const navigate = useNavigate();
 
+    const BaseUrl = getBaseUrl(); 
+
     useEffect(() => {
         const fetchOrders = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/orders/user-orders', {
+                const response = await axios.get(`${BaseUrl}/api/orders/user-orders`, {
                     headers: {
                         Authorization: `Bearer ${token}`, 
                     },

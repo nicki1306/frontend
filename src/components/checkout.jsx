@@ -4,6 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import Payment from './payment.jsx';
 import axios from 'axios';
 import { useAuth } from '../context/AuthContext';
+import { getBaseUrl } from '../Utils/deploy';
 
 const Checkout = () => {
     const { cartItems, clearCart } = useContext(CartContext);
@@ -19,6 +20,8 @@ const Checkout = () => {
     const [showPaymentForm, setShowPaymentForm] = useState(false);
     const navigate = useNavigate();
     const location = useLocation();
+
+    const BaseUrl = getBaseUrl();
 
     useEffect(() => {
         if (!token) {
@@ -78,7 +81,7 @@ const Checkout = () => {
                 total: calculatedTotal
             };
 
-            const response = await axios.post('http://localhost:8081/api/orders', order, {
+            const response = await axios.post(`${BaseUrl}/api/orders`, order, {
                 headers: {
                     Authorization: `Bearer ${token}`,
                 },

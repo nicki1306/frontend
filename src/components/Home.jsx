@@ -4,6 +4,7 @@ import { useCart } from "../context/CartContext";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { getBaseUrl } from "../Utils/deploy";
 
 const Home = () => {
     const navigate = useNavigate();
@@ -13,12 +14,14 @@ const Home = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [error, setError] = useState(null);
 
+    const BaseUrl = getBaseUrl();
+
     // Obtener productos destacados
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8081/api/products/category/destacados"
+                    `${BaseUrl}/api/products/category/destacados`
                 );
                 if (Array.isArray(response.data)) {
                     const featuredProducts = response.data.filter(
@@ -44,7 +47,7 @@ const Home = () => {
         const fetchOnSaleProducts = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:8081/api/products/category/ofertas"
+                    `${BaseUrl}/api/products/category/ofertas`
                 );
                 if (Array.isArray(response.data)) {
                     setOnSaleProducts(response.data);

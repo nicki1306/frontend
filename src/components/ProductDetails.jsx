@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { CartContext } from '../context/CartContext';
 import Swal from 'sweetalert2';
+import { getBaseUrl } from '../Utils/deploy';
 
 const ProductDetails = () => {
     const { id } = useParams(); 
@@ -11,10 +12,12 @@ const ProductDetails = () => {
     const [error, setError] = useState(null);
     const { addToCart } = useContext(CartContext);
 
+    const BaseUrl = getBaseUrl(); 
+
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`http://localhost:8081/api/products/${id}`);
+                const response = await axios.get(`${BaseUrl}/api/products/${id}`);
                 console.log('Producto obtenido:', response.data);
                 setProduct(response.data);
             } catch (error) {

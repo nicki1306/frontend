@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Bar } from 'react-chartjs-2'; 
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
+import { getBaseUrl } from '../Utils/deploy';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
@@ -10,11 +11,13 @@ const SalesAdmin = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const BaseUrl = getBaseUrl();
+
     useEffect(() => {
 
         const fetchSalesData = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/orders');
+                const response = await axios.get(`${BaseUrl}/api/orders`);
 
                 const data = response.data?.data || [];  
                 setSalesData(data);
@@ -86,11 +89,11 @@ const SalesAdmin = () => {
                             salesData.map((order) => (
                                 <tr key={order._id}>
                                     <td className="border px-4 py-2">{new Date(order.createdAt).toLocaleDateString()}</td>
-                                    <td className="border px-4 py-2">{order.user?.name || 'Cliente Anónimo'}</td>  {/* Ajusta si `order.user` no existe */}
+                                    <td className="border px-4 py-2">{order.user?.name || 'Cliente Anónimo'}</td>
                                     <td className="border px-4 py-2">
                                         {order.items.map((item) => (
                                             <p key={item.productId}>
-                                                {item.quantity} x {item.productName || item.productId} {/* Usa `productName` si existe */}
+                                                {item.quantity} x {item.productName || item.productId}
                                             </p>
                                         ))}
                                     </td>

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { getBaseUrl } from '../Utils/deploy';
 
 const Business = () => {
     const [businesses, setBusinesses] = useState([]);
@@ -8,10 +9,12 @@ const Business = () => {
     const [editingBusiness, setEditingBusiness] = useState(null);
     const [loading, setLoading] = useState(false);
 
+    const BaseUrl = getBaseUrl();
+
     useEffect(() => {
         const fetchBusinesses = async () => {
             try {
-                const response = await axios.get('http://localhost:8081/api/business');
+                const response = await axios.get(`${BaseUrl}/api/business`);
                 setBusinesses(response.data.data);
             } catch (err) {
                 console.error('Error al obtener negocios:', err);
@@ -26,7 +29,7 @@ const Business = () => {
 
         setLoading(true);
         try {
-            const response = await axios.post('http://localhost:8081/api/business', newBusiness);
+            const response = await axios.post(`${BaseUrl}/api/business`, newBusiness);
             setBusinesses([...businesses, response.data.data]);
             setNewBusiness({ name: '', products: [{ name: '', price: 0, quantity: 1 }] });
             Swal.fire('¡Negocio creado!', 'El negocio se ha creado correctamente', 'success');
@@ -42,7 +45,7 @@ const Business = () => {
         const updatedBusiness = businesses.find(b => b._id === id);
         setLoading(true);
         try {
-            await axios.put(`http://localhost:8081/api/business/${id}`, updatedBusiness);
+            await axios.put(`${BaseUrl}/api/business/${id}`, updatedBusiness);
             setEditingBusiness(null);
             Swal.fire('¡Negocio actualizado!', 'El negocio se ha actualizado correctamente', 'success');
         } catch (err) {
@@ -65,7 +68,7 @@ const Business = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8081/api/business/${id}`);
+                    await axios.delete(`${BaseUrl}/api/business/${id}`);
                     setBusinesses(businesses.filter(b => b._id !== id));
                     Swal.fire('Eliminado', 'El negocio ha sido eliminado', 'success');
                 } catch (err) {

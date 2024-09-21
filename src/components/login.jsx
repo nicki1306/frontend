@@ -3,6 +3,9 @@ import axios from 'axios';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { AccountCircle } from '@mui/icons-material';
+import { getBaseUrl } from '../Utils/deploy';
+
+const BaseUrl = getBaseUrl();
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -16,7 +19,7 @@ const Login = () => {
         const localCart = JSON.parse(localStorage.getItem('cart'));
         if (localCart && localCart.length > 0) {
             try {
-                await axios.post(`http://localhost:8081/api/cart/sync`, { userId, products: localCart }, {
+                await axios.post(`${BaseUrl}/api/cart/sync`, { userId, products: localCart }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -32,7 +35,7 @@ const Login = () => {
     const handleLogin = async (e) => {
         e.preventDefault(); 
         try {
-            const response = await axios.post('http://localhost:8081/api/user/login', { email, password });
+            const response = await axios.post(`${BaseUrl}/api/user/login`, { email, password });
             const { user, token } = response.data;
             login(user, token);
     
@@ -57,7 +60,7 @@ const Login = () => {
     
 
     const handleOAuth = (provider) => {
-        window.location.href = `http://localhost:8081/api/auth/${provider}`;
+        window.location.href = `${BaseUrl}/api/auth/${provider}`;
     };
 
     return (

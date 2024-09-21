@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';
+import axios from 'axios';ç
+import { getBaseUrl } from '../Utils/deploy';
 
 const SearchResults = () => {
     const [searchParams] = useSearchParams();
     const [products, setProducts] = useState([]);
-    const query = searchParams.get('query'); 
+    const query = searchParams.get('query'); ç
+
+    const BaseUrl = getBaseUrl();
 
     useEffect(() => {
         if (query) {
 
-            axios.get(`http://localhost:8081/api/products/search?query=${query}`)
+            axios.get(`${BaseUrl}/api/products/search?query=${query}`)
                 .then((response) => {
                     setProducts(response.data.products);
                 })

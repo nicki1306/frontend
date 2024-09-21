@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { getBaseUrl } from '../Utils/deploy';
 
 const ControlPanel = () => {
     const [users, setUsers] = useState([]);
@@ -19,13 +20,15 @@ const ControlPanel = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
+    const BaseUrl = getBaseUrl(); 
+
     useEffect(() => {
         const fetchData = async () => {
             try {
 
                 const [usersResponse, productsResponse] = await Promise.all([
-                    axios.get('http://localhost:8081/api/users'),
-                    axios.get('http://localhost:8081/api/products'),
+                    axios.get(`${BaseUrl}/api/users`),
+                    axios.get(`${BaseUrl}/api/products`),
                 ]);
                 setUsers(usersResponse.data.data || []);
                 setProducts(productsResponse.data || []);
@@ -46,7 +49,7 @@ const ControlPanel = () => {
     // gestion de usuarios
     const handleRoleUpdate = async (userId, newRole) => {
         try {
-            await axios.put(`http://localhost:8081/api/users/${userId}`, { role: newRole });
+            await axios.put(`${BaseUrl}/api/users/${userId}`, { role: newRole });
             Swal.fire('Éxito', 'El rol del usuario ha sido actualizado.', 'success');
             setUsers(users.map(user => (user._id === userId ? { ...user, role: newRole } : user)));
         } catch (err) {
@@ -65,7 +68,7 @@ const ControlPanel = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:8081/api/users/${userId}`);
+                    await axios.delete(`${BaseUrl}/api/users/${userId}`);
                     setUsers(users.filter((user) => user._id !== userId));
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado.', 'success');
                 } catch (err) {
@@ -108,7 +111,7 @@ const handleAddProduct = async () => {
             image: imageUrl,
         };
 
-        const response = await axios.post('http://localhost:8081/api/products', productData, {
+        const response = await axios.post(`${BaseUrl}/api/products`, productData, {
             headers: {
                 Authorization: `Bearer ${token}`,
             },
@@ -125,7 +128,7 @@ const handleAddProduct = async () => {
 
     const handleDeleteProduct = async (id) => {
         try {
-            await axios.delete(`http://localhost:8081/api/products/${id}`);
+            await axios.delete(`${BaseUrl}/api/products/${id}`);
             setProducts(products.filter(product => product._id !== id));
         } catch (error) {
             console.error('Error al eliminar producto:', error);

@@ -21,8 +21,8 @@ const Payment = ({ total, name, address, onPaymentSuccess }) => {
         e.preventDefault();
         console.log('Payment submitted:', formData, 'Total:', total);
 
-        // Simula el procesamiento del pago y llama a `onPaymentSuccess`
-        onPaymentSuccess();  // Llama a la función de éxito de pago
+
+        onPaymentSuccess();
 
         // Resetear los datos del formulario
         setFormData({
