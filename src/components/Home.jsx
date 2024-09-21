@@ -15,7 +15,6 @@ const Home = () => {
     const [error, setError] = useState(null);
 
     const BaseUrl = getBaseUrl();
-    console.log(BaseUrl);
 
     // Obtener productos destacados
     useEffect(() => {

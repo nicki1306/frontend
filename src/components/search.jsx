@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import axios from 'axios';ç
+import axios from 'axios';
 import { getBaseUrl } from '../Utils/deploy';
 
 const SearchResults = () => {
     const [searchParams] = useSearchParams();
     const [products, setProducts] = useState([]);
-    const query = searchParams.get('query'); ç
+    const query = searchParams.get('query');
 
     const BaseUrl = getBaseUrl();
 
