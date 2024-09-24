@@ -28,6 +28,7 @@ const ControlPanel = () => {
         const fetchUsers = async () => {
             const token = localStorage.getItem('token');
             console.log("Token en el frontend:", token);
+
             try {
                 const headers = { Authorization: `Bearer ${token}` };
                 const usersResponse = await axios.get(`${BaseUrl}/api/users/all`, { headers });
@@ -46,6 +47,7 @@ const ControlPanel = () => {
                 setLoadingUsers(false);
             }
         };
+
 
         const fetchProducts = async () => {
             const token = localStorage.getItem('token');
@@ -115,6 +117,7 @@ const ControlPanel = () => {
             return response.data.secure_url;
         } catch (error) {
             console.error('Error al subir la imagen:', error.response ? error.response.data : error.message);
+            Swal.fire('Error', 'Error al subir la imagen a Cloudinary.', 'error');
             return null;
         }
     };
