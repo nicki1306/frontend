@@ -31,7 +31,7 @@ const ControlPanel = () => {
 
             try {
                 const headers = { Authorization: `Bearer ${token}` };
-                const usersResponse = await axios.get(`${BaseUrl}/api/users/all`, { headers });
+                const usersResponse = await axios.get(`${BaseUrl}/api/user`, { headers });
                 
                 console.log("Usuarios obtenidos:", usersResponse.data.payload);
 
