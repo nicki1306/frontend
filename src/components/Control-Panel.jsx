@@ -33,7 +33,7 @@ const ControlPanel = () => {
                 const headers = { Authorization: `Bearer ${token}` };
                 const usersResponse = await axios.get(`${BaseUrl}/api/user`, { headers });
                 
-                console.log("Usuarios obtenidos:", usersResponse.data.payload);
+                console.log("Usuarios obtenidos:", usersResponse.data);
 
                 if (usersResponse.data.payload) {
                     setUsers(usersResponse.data.payload);
@@ -84,7 +84,12 @@ const ControlPanel = () => {
     };
 
     const handleDeleteUser = async (userId) => {
+        const cleanedUserId = userId.trim(); 
+        console.log("Intentando eliminar el usuario con ID:", cleanedUserId);
         const token = localStorage.getItem('token');
+        const deleteUrl = `${BaseUrl}/api/users/${cleanedUserId}`;
+        console.log("URL de eliminación:", deleteUrl);
+    
         Swal.fire({
             title: '¿Estás seguro?',
             text: 'No podrás revertir esto.',
@@ -96,14 +101,30 @@ const ControlPanel = () => {
             if (result.isConfirmed) {
                 try {
                     const headers = { Authorization: `Bearer ${token}` };
-                    await axios.delete(`${BaseUrl}/api/users/${userId}`, { headers });
-                    setUsers(users.filter((user) => user._id !== userId));
+                    await axios.delete(deleteUrl, { headers });
+                    setUsers(users.filter((user) => user._id !== cleanedUserId));
                     Swal.fire('Eliminado', 'El usuario ha sido eliminado.', 'success');
                 } catch (err) {
                     Swal.fire('Error', 'No se pudo eliminar el usuario.', 'error');
+                    console.error('Error al eliminar usuario:', err);
                 }
             }
         });
+    };
+    
+
+    //Eliminar usuarios inactivos
+    const handleDeleteInactiveUsers = async () => {
+        const token = localStorage.getItem('token');
+        try {
+            const headers = { Authorization: `Bearer ${token}` };
+            const response = await axios.delete(`${BaseUrl}/api/users/inactive`, { headers });
+            Swal.fire('Éxito', response.data.message, 'success');
+            setUsers(users.filter(user => user.active));
+        } catch (err) {
+            console.error('Error al eliminar usuarios inactivos:', err.response || err);
+            Swal.fire('Error', 'No se pudo eliminar los usuarios inactivos.', 'error');
+        }
     };
 
     // Subir la imagen a Cloudinary
@@ -173,6 +194,14 @@ const ControlPanel = () => {
                     className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
                 >
                     {showInactiveUsers ? 'Mostrar Todos' : 'Mostrar Inactivos'}
+                </button>
+
+                {/* Botón para eliminar usuarios inactivos */}
+                <button
+                    onClick={handleDeleteInactiveUsers}
+                    className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                >
+                    Eliminar Usuarios Inactivos
                 </button>
             </div>
 
