@@ -75,8 +75,8 @@ const ControlPanel = () => {
         const token = localStorage.getItem('token');
         try {
             const headers = { Authorization: `Bearer ${token}` };
-            await axios.put(`${BaseUrl}/api/users/${userId}`, { role: newRole }, { headers });
-            Swal.fire('Éxito', 'El rol del usuario ha sido actualizado.', 'success');
+            const response = await axios.put(`${BaseUrl}/api/user/role/${userId}`, { role: newRole }, { headers });
+            Swal.fire('Éxito', 'El rol del usuario ha sido actualizado.', response.data.message, 'success');
             setUsers(users.map(user => (user._id === userId ? { ...user, role: newRole } : user)));
         } catch (err) {
             Swal.fire('Error', 'No se pudo actualizar el rol del usuario.', 'error');
@@ -87,7 +87,7 @@ const ControlPanel = () => {
         const cleanedUserId = userId.trim(); 
         console.log("Intentando eliminar el usuario con ID:", cleanedUserId);
         const token = localStorage.getItem('token');
-        const deleteUrl = `${BaseUrl}/api/users/${cleanedUserId}`;
+        const deleteUrl = `${BaseUrl}/api/user/${cleanedUserId}`;
         console.log("URL de eliminación:", deleteUrl);
     
         Swal.fire({
@@ -118,7 +118,7 @@ const ControlPanel = () => {
         const token = localStorage.getItem('token');
         try {
             const headers = { Authorization: `Bearer ${token}` };
-            const response = await axios.delete(`${BaseUrl}/api/users/inactive`, { headers });
+            const response = await axios.delete(`${BaseUrl}/api/user/inactive`, { headers });
             Swal.fire('Éxito', response.data.message, 'success');
             setUsers(users.filter(user => user.active));
         } catch (err) {
