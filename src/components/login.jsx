@@ -16,21 +16,35 @@ const Login = () => {
     const location = useLocation();
 
     const syncCartWithBackend = async (userId, token) => {
-        const localCart = JSON.parse(localStorage.getItem('cart'));
-        if (localCart && localCart.length > 0) {
+
+        let localCart = JSON.parse(localStorage.getItem('cart'));
+    
+        if (!localCart || localCart.length === 0) {
+            try {
+                const response = await axios.get(`${BaseUrl}/api/cart/${userId}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
+                localCart = response.data.products;
+                localStorage.setItem('cart', JSON.stringify(localCart)); 
+            } catch (error) {
+                console.error('Error obteniendo carrito del backend:', error);
+            }
+        } else {
             try {
                 await axios.post(`${BaseUrl}/api/cart/sync`, { userId, products: localCart }, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
                 });
-
-                localStorage.removeItem('cart');
+                localStorage.removeItem('cart'); 
             } catch (error) {
-                console.error('Error syncing cart:', error);
+                console.error('Error sincronizando carrito:', error);
             }
         }
     };
+    
 
     const handleLogin = async (e) => {
         e.preventDefault(); 
@@ -61,6 +75,12 @@ const Login = () => {
 
     const handleOAuth = (provider) => {
         window.location.href = `${BaseUrl}/api/auth/${provider}`;
+    };
+
+    const logout = () => {
+        localStorage.removeItem('cart'); 
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     return (
